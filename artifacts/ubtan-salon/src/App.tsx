@@ -49,39 +49,32 @@ export default function App() {
       </section>
 
       {/* About */}
-      <section id="about" className="py-32 bg-card relative">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center gap-16 md:gap-24">
-            <div className="w-full md:w-1/2">
-              <ScrollReveal>
-                <div className="relative">
-                  <div className="absolute -inset-4 border border-primary/20" />
-                  <img src="/images/owner.png" alt="Neelu Rai" className="w-full aspect-[3/4] object-cover" />
-                </div>
-              </ScrollReveal>
-            </div>
-            <div className="w-full md:w-1/2 space-y-8">
-              <ScrollReveal>
-                <h2 className="text-3xl md:text-5xl font-serif text-primary">The Visionary</h2>
-                <div className="h-px w-24 bg-primary/30 mt-6" />
-              </ScrollReveal>
-              <ScrollReveal delay={200}>
-                <p className="text-lg font-light leading-relaxed text-muted-foreground">
-                  Founded by Neelu Rai, UBTAN is more than a salon—it is a private sanctuary designed exclusively for women. With years of expertise in high-end beauty, Neelu created this space with one philosophy in mind: every woman deserves to experience her own beauty in a setting of absolute sophistication.
-                </p>
-              </ScrollReveal>
-              <ScrollReveal delay={400}>
-                <p className="text-lg font-light leading-relaxed text-muted-foreground">
-                  Here, there is no rush, no noise. Only meticulous craftsmanship, premium products, and an environment tailored to your comfort and transformation.
-                </p>
-              </ScrollReveal>
-              <ScrollReveal delay={600}>
-                <div className="pt-4">
-                  <p className="font-serif text-2xl italic text-primary">Neelu Rai</p>
-                  <p className="text-sm tracking-widest text-muted-foreground uppercase mt-2">Founder & Creative Director</p>
-                </div>
-              </ScrollReveal>
-            </div>
+      <section id="about" className="py-32 bg-card relative overflow-hidden">
+        <div className="absolute -right-32 top-1/2 -translate-y-1/2 w-[28rem] h-[28rem] border border-primary/10 rounded-full" />
+        <div className="absolute -right-16 top-1/2 -translate-y-1/2 w-72 h-72 border border-primary/10 rounded-full" />
+        <div className="container mx-auto px-6 relative">
+          <div className="max-w-3xl mx-auto text-center space-y-8">
+            <ScrollReveal>
+              <span className="text-primary text-sm tracking-[0.2em] uppercase mb-4 block">The Visionary</span>
+              <h2 className="text-3xl md:text-5xl font-serif text-foreground">Meet Neelu Rai</h2>
+              <div className="h-px w-24 bg-primary/30 mx-auto mt-6" />
+            </ScrollReveal>
+            <ScrollReveal delay={200}>
+              <p className="text-lg font-light leading-relaxed text-muted-foreground">
+                Founded by Neelu Rai, UBTAN is more than a salon—it is a private sanctuary designed exclusively for women. With years of expertise in high-end beauty, Neelu created this space with one philosophy in mind: every woman deserves to experience her own beauty in a setting of absolute sophistication.
+              </p>
+            </ScrollReveal>
+            <ScrollReveal delay={400}>
+              <p className="text-lg font-light leading-relaxed text-muted-foreground">
+                Here, there is no rush, no noise. Only meticulous craftsmanship, premium products, and an environment tailored to your comfort and transformation.
+              </p>
+            </ScrollReveal>
+            <ScrollReveal delay={600}>
+              <div className="pt-4">
+                <p className="font-serif text-2xl italic text-primary">Neelu Rai</p>
+                <p className="text-sm tracking-widest text-muted-foreground uppercase mt-2">Founder & Creative Director</p>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -116,29 +109,36 @@ export default function App() {
         </div>
       </section>
 
-      {/* Gallery */}
-      <section id="gallery" className="py-32 bg-card">
+      {/* Why Choose Us */}
+      <section id="gallery" className="py-32 bg-card relative overflow-hidden">
         <div className="container mx-auto px-6">
           <ScrollReveal>
             <div className="text-center max-w-2xl mx-auto mb-20">
               <span className="text-primary text-sm tracking-[0.2em] uppercase mb-4 block">The Experience</span>
-              <h2 className="text-4xl md:text-5xl font-serif text-foreground">A Glimpse of Luxury</h2>
+              <h2 className="text-4xl md:text-5xl font-serif text-foreground">Why Women Choose UBTAN</h2>
+              <div className="h-px w-24 bg-primary/30 mx-auto mt-8" />
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <ScrollReveal>
-              <img src="/images/gallery-hair.png" alt="Hair Styling" className="w-full aspect-square object-cover hover:opacity-90 transition-opacity" />
-            </ScrollReveal>
-            <ScrollReveal delay={100}>
-              <img src="/images/gallery-skin.png" alt="Skin Care" className="w-full aspect-square object-cover hover:opacity-90 transition-opacity" />
-            </ScrollReveal>
-            <ScrollReveal delay={200}>
-              <img src="/images/gallery-makeup.png" alt="Makeup" className="w-full aspect-square object-cover hover:opacity-90 transition-opacity" />
-            </ScrollReveal>
-            <ScrollReveal delay={300}>
-              <img src="/images/gallery-nails.png" alt="Nails" className="w-full aspect-square object-cover hover:opacity-90 transition-opacity" />
-            </ScrollReveal>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            {[
+              { title: "Experienced Professionals", desc: "Years of refined expertise in high-end beauty craftsmanship." },
+              { title: "Hygienic Environment", desc: "Immaculate standards maintained at every step of your visit." },
+              { title: "Premium Products", desc: "Only the finest, salon-grade formulations touch your skin and hair." },
+              { title: "Personalized Care", desc: "Every service tailored to your unique features and preferences." },
+              { title: "Relaxing Ambience", desc: "A calm, unhurried sanctuary designed for total ease." },
+              { title: "Ladies Only", desc: "A private space exclusively for women, always." }
+            ].map((item, i) => (
+              <ScrollReveal key={i} delay={i * 100}>
+                <div className="text-center space-y-3 p-6">
+                  <div className="w-12 h-12 mx-auto rounded-full border border-primary/30 flex items-center justify-center text-primary font-serif text-lg">
+                    {i + 1}
+                  </div>
+                  <h3 className="font-serif text-lg text-foreground">{item.title}</h3>
+                  <p className="text-sm font-light text-muted-foreground leading-relaxed">{item.desc}</p>
+                </div>
+              </ScrollReveal>
+            ))}
           </div>
         </div>
       </section>
@@ -242,6 +242,15 @@ export default function App() {
           <p className="text-sm font-light text-muted-foreground">© {new Date().getFullYear()} UBTAN Salon by Neelu Rai. All rights reserved.</p>
         </div>
       </footer>
+
+      {/* Fixed Booking Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <BookingModal>
+          <button className="flex items-center gap-2 px-6 py-4 bg-primary text-primary-foreground text-sm tracking-widest uppercase shadow-lg shadow-black/40 hover:bg-primary/90 transition-all duration-300">
+            Book Now
+          </button>
+        </BookingModal>
+      </div>
     </div>
   );
 }
