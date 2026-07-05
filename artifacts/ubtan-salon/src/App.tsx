@@ -12,8 +12,8 @@ export default function App() {
   return (
     <div className="min-h-screen w-full bg-background text-foreground selection:bg-primary/30 selection:text-primary">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-white/5 py-4">
-        <div className="container mx-auto px-6 flex items-center justify-between">
+      <nav className="floating-panel fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-white/5 py-4">
+        <div className="container mx-auto px-6 flex items-center justify-between gap-4">
           <div className="text-2xl font-serif text-primary tracking-widest uppercase">UBTAN</div>
           <div className="hidden md:flex items-center space-x-8 text-sm font-light tracking-wide text-muted-foreground">
             <a href="#about" className="hover:text-primary transition-colors">About</a>
@@ -21,23 +21,20 @@ export default function App() {
             <a href="#gallery" className="hover:text-primary transition-colors">Gallery</a>
             <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
           </div>
-          <div className="w-24 md:w-32" />
+          <div className="flex items-center gap-3">
+            <GalleryModal>
+              <button className="flex items-center justify-center px-4 py-2 md:px-5 md:py-2.5 border border-primary/30 text-primary text-xs tracking-widest uppercase hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+                Gallery
+              </button>
+            </GalleryModal>
+            <BookingModal>
+              <button className="flex items-center justify-center px-4 py-2 md:px-5 md:py-2.5 bg-primary text-primary-foreground text-xs tracking-widest uppercase hover:bg-primary/90 transition-all duration-300">
+                Book Now
+              </button>
+            </BookingModal>
+          </div>
         </div>
       </nav>
-
-      {/* Fixed Top-Right Panel */}
-      <div className="floating-panel fixed top-20 right-6 z-50 flex flex-col items-end gap-3">
-        <GalleryModal>
-          <button className="flex items-center gap-2 px-5 py-3 bg-card/90 backdrop-blur-md border border-primary/30 text-primary text-xs tracking-widest uppercase shadow-lg shadow-black/30 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-            Gallery
-          </button>
-        </GalleryModal>
-        <BookingModal>
-          <button className="flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground text-xs tracking-widest uppercase shadow-lg shadow-black/40 hover:bg-primary/90 transition-all duration-300">
-            Book Now
-          </button>
-        </BookingModal>
-      </div>
 
       {/* Hero */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
