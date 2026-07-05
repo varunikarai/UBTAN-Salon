@@ -98,11 +98,40 @@
 /* Scroll reveal animations */
 .reveal {
   opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+  transition: opacity 0.9s cubic-bezier(0.5, 0, 0, 1), transform 0.9s cubic-bezier(0.5, 0, 0, 1);
+}
+
+.reveal-up {
+  transform: translateY(36px);
+}
+
+.reveal-left {
+  transform: translateX(-48px);
+}
+
+.reveal-right {
+  transform: translateX(48px);
+}
+
+.reveal-scale {
+  transform: scale(0.92);
 }
 
 .reveal.active {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) translateX(0) scale(1);
+}
+
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+  50% { transform: translateY(-14px) translateX(6px); opacity: 0.7; }
+}
+
+.floating-panel {
+  animation: panel-drop 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes panel-drop {
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: translateY(0); }
 }

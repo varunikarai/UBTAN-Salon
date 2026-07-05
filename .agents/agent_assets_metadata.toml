@@ -36,3 +36,27 @@ id = "prh1s-QwFOMChDSfdDRws"
 uri = "file://artifacts/ubtan-salon/public/images/gallery-nails.png"
 type = "image"
 title = "Elegant spa manicure"
+
+[[generated]]
+id = "v_Z-BTs9CiLBRTRcS3vuJ"
+uri = "file://artifacts/ubtan-salon/public/images/gallery-1.png"
+type = "image"
+title = "luxury manicure gallery image"
+
+[[generated]]
+id = "-P2VFJcGe8YbpetsEU1Pu"
+uri = "file://artifacts/ubtan-salon/public/images/gallery-2.png"
+type = "image"
+title = "luxury makeup flatlay gallery"
+
+[[generated]]
+id = "ofve2BZSauyGJkyURWAvb"
+uri = "file://artifacts/ubtan-salon/public/images/gallery-3.png"
+type = "image"
+title = "hair styling close up gallery"
+
+[[generated]]
+id = "KDuB-aDVDVkHhu4_4MW9W"
+uri = "file://artifacts/ubtan-salon/public/images/gallery-4.png"
+type = "image"
+title = "spa skincare still life gallery"
