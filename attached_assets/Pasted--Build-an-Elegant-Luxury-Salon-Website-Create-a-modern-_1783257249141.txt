@@ -1,0 +1,344 @@
+# Build an Elegant Luxury Salon Website
+
+Create a modern, responsive, single-page website using **HTML, CSS, and vanilla JavaScript only** (no backend, no paid APIs, no frameworks). The website should be lightweight and work perfectly on Replit's free plan.
+
+## Brand Details
+
+**Salon Name:** UBTAN
+
+**Owner:** Neelu Rai
+
+**Tagline:** "Blossom into a new u..."
+
+**Business:** Ladies-only premium beauty salon.
+
+The overall feeling should be:
+
+* Elegant
+* Premium
+* Luxurious
+* Feminine
+* Warm
+* Sophisticated
+* Minimalistic
+
+Avoid flashy animations or clutter.
+
+---
+
+## Color Palette
+
+Use a luxury combination of:
+
+* Matte Black (#111111)
+* Rich Gold (#D4AF37)
+* Champagne Gold (#E5C97A)
+* Warm Beige (#F5EFE6)
+* Ivory (#FCFAF7)
+* White text where appropriate
+
+The website should feel like entering an expensive boutique salon.
+
+---
+
+## Typography
+
+Use Google Fonts:
+
+Headings:
+
+* Playfair Display
+
+Body:
+
+* Poppins
+
+Large elegant headings with clean spacing.
+
+---
+
+## Hero Section
+
+A fullscreen hero with:
+
+Large logo text:
+
+UBTAN
+
+Below it:
+
+Blossom into a new u...
+
+Short description:
+
+"Luxury beauty, timeless elegance, and personalized care exclusively for women."
+
+Buttons:
+
+* Book Appointment
+* Explore Services
+
+Background should have:
+
+* black gradient
+* subtle gold shine
+* elegant abstract texture
+* floating golden particles (very subtle)
+
+---
+
+## Navigation
+
+Sticky navbar with:
+
+* Home
+* About
+* Services
+* Gallery
+* Testimonials
+* Contact
+
+Smooth scrolling.
+
+Navbar becomes slightly transparent while scrolling.
+
+---
+
+## About Section
+
+Heading:
+
+Meet Neelu Rai
+
+Content:
+
+Introduce Neelu Rai as a passionate beauty professional dedicated to helping women look and feel confident through personalized beauty services in a welcoming and relaxing environment.
+
+Include an elegant photo placeholder.
+
+---
+
+## Services Section
+
+Display services as beautiful cards with golden borders.
+
+Include:
+
+Hair Services
+
+* Haircut
+* Hair Spa
+* Hair Coloring
+* Smoothening
+
+Skin Care
+
+* Cleanup
+* Facial
+* Ubtan Treatments
+* Detan
+
+Makeup
+
+* Bridal Makeup
+* Party Makeup
+* Engagement Makeup
+
+Hands & Feet
+
+* Manicure
+* Pedicure
+
+Threading & Waxing
+
+Each card should have:
+
+* elegant icon
+* service title
+* short description
+
+Hover effect:
+
+* gold glow
+* slight lift
+
+---
+
+## Why Choose Us
+
+Create elegant icon cards.
+
+Include:
+
+✓ Experienced Professional
+
+✓ Hygienic Environment
+
+✓ Premium Products
+
+✓ Personalized Care
+
+✓ Relaxing Ambience
+
+✓ Ladies Only
+
+---
+
+## Gallery
+
+Create an elegant masonry-style gallery using placeholder salon images.
+
+Hover effect:
+
+* zoom
+* golden overlay
+
+---
+
+## Testimonials
+
+Luxury cards.
+
+Include 4 sample reviews with 5 gold stars.
+
+Example names:
+
+* Priya Sharma
+* Aditi Verma
+* Riya Singh
+* Sneha Kapoor
+
+---
+
+## Contact Section
+
+Beautiful split layout.
+
+Include:
+
+Salon Name:
+UBTAN
+
+Owner:
+Neelu Rai
+
+Phone:
++91 XXXXXXXXXX (placeholder)
+
+Email:
+[contact@ubtansalon.com](mailto:contact@ubtansalon.com) (placeholder)
+
+Address:
+(Add later)
+
+Working Hours:
+
+Monday–Saturday
+10:00 AM – 8:00 PM
+
+Sunday
+By Appointment
+
+Buttons:
+
+* Call Now
+* WhatsApp
+* Get Directions
+
+---
+
+## Footer
+
+Elegant black footer.
+
+Show:
+
+UBTAN
+
+Blossom into a new u...
+
+© 2026 UBTAN. All Rights Reserved.
+
+---
+
+## Animations
+
+Use tasteful animations only.
+
+Examples:
+
+* fade in while scrolling
+* smooth hover
+* floating gold particles
+* soft glowing buttons
+* elegant section reveal
+
+Avoid excessive movement.
+
+---
+
+## Responsiveness
+
+Must look perfect on:
+
+* Mobile
+* Tablet
+* Laptop
+* Desktop
+
+Use Flexbox and CSS Grid.
+
+---
+
+## Extra Luxury Details
+
+Add:
+
+* thin gold dividers
+* rounded elegant cards
+* subtle shadows
+* glassmorphism where appropriate
+* soft gradients
+* gold accent lines
+* smooth transitions
+* custom scrollbar in gold theme
+
+---
+
+## Booking Button
+
+The "Book Appointment" button should open a stylish modal where users can enter:
+
+* Name
+* Phone
+* Service
+* Preferred Date
+* Message
+
+No backend required.
+
+On submit, simply show:
+
+"Thank you! We'll contact you shortly."
+
+---
+
+## Code Quality
+
+Separate files:
+
+* index.html
+* style.css
+* script.js
+
+Write clean, well-commented code.
+
+No external libraries except Google Fonts.
+
+Keep the website lightweight and fast.
+
+---
+
+## Overall Goal
+
+The final website should feel like the online presence of a premium luxury salon, with an elegant black, gold, and beige aesthetic that inspires trust, sophistication, and comfort. Every section should have polished spacing, refined typography, smooth interactions, and a high-end visual identity worthy of a boutique beauty brand.
