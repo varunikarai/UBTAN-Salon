@@ -4,9 +4,10 @@ import { cn } from '@/lib/utils';
 interface ScrollRevealProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   delay?: number;
+  direction?: 'up' | 'left' | 'right' | 'scale';
 }
 
-export function ScrollReveal({ children, className, delay = 0, ...props }: ScrollRevealProps) {
+export function ScrollReveal({ children, className, delay = 0, direction = 'up', ...props }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export function ScrollReveal({ children, className, delay = 0, ...props }: Scrol
   }, [delay]);
 
   return (
-    <div ref={ref} className={cn('reveal', className)} {...props}>
+    <div ref={ref} className={cn('reveal', `reveal-${direction}`, className)} {...props}>
       {children}
     </div>
   );
