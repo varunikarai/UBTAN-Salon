@@ -1,0 +1,38 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "LVEqVqvNMIMFW3Sflp0eS"
+uri = "file://artifacts/ubtan-salon/public/images/hero-bg.png"
+type = "image"
+title = "Luxury salon interior background"
+
+[[generated]]
+id = "w-mlZvywkiVBVMwtlfVhg"
+uri = "file://artifacts/ubtan-salon/public/images/owner.png"
+type = "image"
+title = "Elegant salon owner portrait"
+
+[[generated]]
+id = "OvXfPWa7atKh-gBt05uvo"
+uri = "file://artifacts/ubtan-salon/public/images/gallery-hair.png"
+type = "image"
+title = "Healthy shiny hair closeup"
+
+[[generated]]
+id = "QKzuiyJG4-vxWos_TLCNe"
+uri = "file://artifacts/ubtan-salon/public/images/gallery-skin.png"
+type = "image"
+title = "Luxury skincare treatment"
+
+[[generated]]
+id = "QAmkIlMzlw_m6w3qFRUCu"
+uri = "file://artifacts/ubtan-salon/public/images/gallery-makeup.png"
+type = "image"
+title = "High-end makeup brushes"
+
+[[generated]]
+id = "prh1s-QwFOMChDSfdDRws"
+uri = "file://artifacts/ubtan-salon/public/images/gallery-nails.png"
+type = "image"
+title = "Elegant spa manicure"
