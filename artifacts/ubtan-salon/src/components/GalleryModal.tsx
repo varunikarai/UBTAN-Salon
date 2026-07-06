@@ -1,16 +1,36 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
-const GALLERY_IMAGES = [
-  { src: '/images/gallery-1.png', alt: 'Luxury manicure detail' },
-  { src: '/images/gallery-2.png', alt: 'Bespoke makeup artistry' },
-  { src: '/images/gallery-3.png', alt: 'Hair styling craftsmanship' },
-  { src: '/images/gallery-4.png', alt: 'Ubtan skincare ritual' },
-];
+type GalleryImage = {
+  id?: number;
+  src: string;
+  alt: string;
+};
 
 export function GalleryModal({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<number | null>(null);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+
+  useEffect(() => {
+    const loadGallery = async () => {
+      try {
+        const response = await fetch('/api/gallery');
+        if (response.ok) {
+          const data = await response.json() as GalleryImage[];
+          if (Array.isArray(data) && data.length > 0) {
+            setGalleryImages(data);
+          }
+        }
+      } catch {
+        // Ignore fetch failures.
+      }
+    };
+
+    if (open) {
+      loadGallery();
+    }
+  }, [open]);
 
   return (
     <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setActive(null); }}>
@@ -27,7 +47,7 @@ export function GalleryModal({ children }: { children: React.ReactNode }) {
 
         {active === null ? (
           <div className="grid grid-cols-2 gap-4 mt-4">
-            {GALLERY_IMAGES.map((img, i) => (
+            {galleryImages.map((img, i) => (
               <button
                 key={i}
                 onClick={() => setActive(i)}
@@ -46,13 +66,13 @@ export function GalleryModal({ children }: { children: React.ReactNode }) {
           <div className="mt-4">
             <div className="relative aspect-[4/3] overflow-hidden">
               <img
-                src={GALLERY_IMAGES[active].src}
-                alt={GALLERY_IMAGES[active].alt}
+                src={galleryImages[active].src}
+                alt={galleryImages[active].alt}
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="flex items-center justify-between mt-4">
-              <p className="text-sm font-light text-muted-foreground">{GALLERY_IMAGES[active].alt}</p>
+              <p className="text-sm font-light text-muted-foreground">{galleryImages[active].alt}</p>
               <button
                 onClick={() => setActive(null)}
                 className="text-xs tracking-widest text-primary uppercase hover:underline"
