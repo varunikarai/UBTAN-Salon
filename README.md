@@ -1,56 +1,40 @@
-# UBTAN Salon Website
+# UBTAN
 
-A premium, luxury-focused salon website for UBTAN with elegant animations, a polished service experience, and owner-managed content sections.
+I created this website for my mother's salon, UBTAN, and wanted it to feel elegant, warm, and premium while still being easy to use. The goal was to build a digital space that reflects the salon's identity and gives visitors a calm, luxurious first impression.
 
-## Features
+The brand line behind this project is: "Blossom into a new u..."
 
-- Premium landing page with refined scroll animation and luxe styling
-- Services section with a private owner-editable menu
-- Review and gallery sections backed by a lightweight API and local SQLite data store
-- Booking and gallery modals for the public-facing experience
+## What this site includes
+
+- A refined landing experience with polished motion and premium styling
+- A service-focused layout that highlights the salon's offerings
+- A gallery and review experience that helps build trust with visitors
+- A private owner-managed content area for updating the service menu without exposing the editing flow publicly
+
+## Tech stack
+
+- React + TypeScript for the frontend experience
+- Vite for fast local development and build tooling
+- Express for the lightweight backend API
+- SQLite for local content storage during development
+- Tailwind CSS for the visual design system
 
 ## Project structure
 
-- artifacts/ubtan-salon: Vite + React frontend
-- artifacts/api-server: Express API backend
-- lib: shared API client and database packages
+- artifacts/ubtan-salon: frontend application
+- artifacts/api-server: backend API
+- lib: shared packages and supporting libraries
 
 ## Getting started
 
-### 1. Install dependencies
-
-From the repository root:
+Install dependencies from the repository root:
 
 ```bash
 npm install
 ```
 
-### 2. Start the API server
-
-```bash
-cd artifacts/api-server
-npm run dev
-```
-
-### 3. Start the frontend
-
-In a separate terminal:
-
-```bash
-cd artifacts/ubtan-salon
-npm run dev
-```
-
-The frontend will be available at http://localhost:5173 and the API will run on the configured port.
-
-## Owner access
-
-The private services-management panel can be unlocked with the owner access code:
-
-```text
-ubtan2026
-```
+Then start the frontend and API locally using your preferred development setup.
 
 ## Notes
 
-The services, reviews, and gallery content are stored through the API using a local SQLite database for local development and demo purposes.
+This project was built as a personal, brand-focused website for UBTAN and is intended to reflect the salon's atmosphere: thoughtful, elevated, and welcoming.
