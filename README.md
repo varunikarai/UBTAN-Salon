@@ -27,13 +27,47 @@ The brand line behind this project is: "Blossom into a new u..."
 
 ## Getting started
 
-Install dependencies from the repository root:
+### 1. Install dependencies
+
+From the repository root:
 
 ```bash
-npm install
+cd /Users/varunikarai/Desktop/Ubtan_website/UBTAN-Salon
+pnpm install
 ```
 
-Then start the frontend and API locally using your preferred development setup.
+### 2. Start the frontend app
+
+Run the salon frontend from the app folder:
+
+```bash
+cd /Users/varunikarai/Desktop/Ubtan_website/UBTAN-Salon/artifacts/ubtan-salon
+pnpm dev
+```
+
+The app will be available at:
+
+```text
+http://localhost:5173/
+```
+
+### 3. Start the backend API (optional)
+
+If you also want the local API server running:
+
+```bash
+cd /Users/varunikarai/Desktop/Ubtan_website/UBTAN-Salon/artifacts/api-server
+pnpm dev
+```
+
+### 4. Useful checks
+
+To verify the frontend build locally:
+
+```bash
+cd /Users/varunikarai/Desktop/Ubtan_website/UBTAN-Salon/artifacts/ubtan-salon
+pnpm build
+```
 
 ## Notes
 
