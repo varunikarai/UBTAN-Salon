@@ -38,3 +38,5 @@ Then start the frontend and API locally using your preferred development setup.
 ## Notes
 
 This project was built as a personal, brand-focused website for UBTAN and is intended to reflect the salon's atmosphere: thoughtful, elevated, and welcoming.
+
+Thanks for Visiting!
