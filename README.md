@@ -32,7 +32,8 @@ The brand line behind this project is: "Blossom into a new u..."
 From the repository root:
 
 ```bash
-cd /Users/varunikarai/Desktop/Ubtan_website/UBTAN-Salon
+git clone https://github.com/varunikarai/UBTAN-Salon.git
+cd UBTAN-Salon
 pnpm install
 ```
 
@@ -41,7 +42,7 @@ pnpm install
 Run the salon frontend from the app folder:
 
 ```bash
-cd /Users/varunikarai/Desktop/Ubtan_website/UBTAN-Salon/artifacts/ubtan-salon
+cd artifacts/ubtan-salon
 pnpm dev
 ```
 
@@ -56,7 +57,7 @@ http://localhost:5173/
 If you also want the local API server running:
 
 ```bash
-cd /Users/varunikarai/Desktop/Ubtan_website/UBTAN-Salon/artifacts/api-server
+cd artifacts/api-server
 pnpm dev
 ```
 
@@ -65,7 +66,7 @@ pnpm dev
 To verify the frontend build locally:
 
 ```bash
-cd /Users/varunikarai/Desktop/Ubtan_website/UBTAN-Salon/artifacts/ubtan-salon
+cd artifacts/ubtan-salon
 pnpm build
 ```
 
