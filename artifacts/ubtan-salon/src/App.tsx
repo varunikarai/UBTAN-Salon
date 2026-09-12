@@ -214,8 +214,9 @@ export default function App() {
         <div className="container mx-auto px-6 flex items-center justify-between gap-4">
           <Link href="/our-story">
             <motion.span
-              className="cursor-pointer text-2xl font-serif text-primary tracking-widest uppercase"
-              whileHover={{ scale: 1.05, letterSpacing: '0.12em' }}
+              className="inline-block cursor-pointer text-2xl font-serif text-primary tracking-widest uppercase"
+              style={{ transformOrigin: 'left center' }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
