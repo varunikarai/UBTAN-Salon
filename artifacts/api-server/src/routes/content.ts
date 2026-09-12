@@ -79,6 +79,10 @@ router.post("/gallery", requireOwnerAuth, (req, res) => {
     return res.status(400).json({ error: "src and alt are required" });
   }
 
+  if (src.length > 500 || alt.length > 200) {
+    return res.status(400).json({ error: "src or alt exceeds the maximum length" });
+  }
+
   const item = createGalleryItem(src, alt);
   return res.status(201).json(item);
 });
