@@ -25,7 +25,8 @@ app.use(
     },
   }),
 );
-app.use(cors());
+const isProduction = process.env.NODE_ENV === "production";
+app.use(cors(isProduction ? { origin: process.env.ALLOWED_ORIGIN ?? false } : undefined));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

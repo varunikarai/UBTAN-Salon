@@ -4,22 +4,66 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
-export function ReviewModal({ children }: { children: React.ReactNode }) {
+type ReviewItem = {
+  id?: number;
+  name: string;
+  body: string;
+  rating: number;
+};
+
+export function ReviewModal({
+  children,
+  onReviewAdded,
+}: {
+  children: React.ReactNode;
+  onReviewAdded?: (review: ReviewItem) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [name, setName] = useState('');
+  const [body, setBody] = useState('');
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const resetForm = () => {
+    setName('');
+    setBody('');
+    setRating(5);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setOpen(false);
+    if (!name.trim() || !body.trim() || submitting) return;
+
+    setSubmitting(true);
+    try {
+      const response = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name.trim(), body: body.trim(), rating }),
+      });
+
+      if (!response.ok) {
+        window.alert('Could not submit your review. Try again.');
+        return;
+      }
+
+      const created = await response.json() as ReviewItem;
+      onReviewAdded?.(created);
+      setSubmitted(true);
       setTimeout(() => {
-        setSubmitted(false);
-        setRating(5);
-      }, 300);
-    }, 3000);
+        setOpen(false);
+        setTimeout(() => {
+          setSubmitted(false);
+          resetForm();
+        }, 300);
+      }, 3000);
+    } catch {
+      window.alert('Could not submit your review. Try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -45,7 +89,13 @@ export function ReviewModal({ children }: { children: React.ReactNode }) {
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Input required placeholder="Your Full Name" className="border-border/50 bg-background/50 rounded-none focus-visible:ring-primary" />
+                <Input
+                  required
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  placeholder="Your Full Name"
+                  className="border-border/50 bg-background/50 rounded-none focus-visible:ring-primary"
+                />
               </div>
               <div className="space-y-2">
                 <span className="text-xs tracking-widest text-primary uppercase block mb-1">Your Rating</span>
@@ -65,10 +115,20 @@ export function ReviewModal({ children }: { children: React.ReactNode }) {
                 </div>
               </div>
               <div className="space-y-2">
-                <Textarea required placeholder="Tell us about your experience..." className="min-h-[100px] border-border/50 bg-background/50 rounded-none focus-visible:ring-primary" />
+                <Textarea
+                  required
+                  value={body}
+                  onChange={(event) => setBody(event.target.value)}
+                  placeholder="Tell us about your experience..."
+                  className="min-h-[100px] border-border/50 bg-background/50 rounded-none focus-visible:ring-primary"
+                />
               </div>
-              <Button type="submit" className="w-full rounded-none bg-primary text-primary-foreground hover:bg-primary/90 font-medium tracking-wide">
-                SUBMIT REVIEW
+              <Button
+                type="submit"
+                disabled={submitting}
+                className="w-full rounded-none bg-primary text-primary-foreground hover:bg-primary/90 font-medium tracking-wide"
+              >
+                {submitting ? 'SUBMITTING...' : 'SUBMIT REVIEW'}
               </Button>
             </form>
           </>

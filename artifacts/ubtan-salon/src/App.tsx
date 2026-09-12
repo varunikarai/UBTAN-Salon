@@ -37,6 +37,10 @@ export default function App() {
     if (typeof window === 'undefined') return false;
     return window.localStorage.getItem('ubtan-owner-mode') === 'true';
   });
+  const [ownerToken, setOwnerToken] = useState(() => {
+    if (typeof window === 'undefined') return '';
+    return window.localStorage.getItem('ubtan-owner-token') ?? '';
+  });
   const [services, setServices] = useState<ServiceItem[]>(defaultServices);
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
@@ -44,12 +48,24 @@ export default function App() {
   const [newServiceDescription, setNewServiceDescription] = useState('');
   const isReturningVisitor = useReturningVisitor();
 
-  const handleOwnerAccess = () => {
+  const handleOwnerAccess = async () => {
     const password = window.prompt('Enter owner access code');
-    if (password === 'REDACTED-OWNER-CODE') {
-      setOwnerMode(true);
-    } else if (password) {
-      window.alert('Access denied');
+    if (!password) return;
+
+    try {
+      const response = await fetch('/api/owner/verify', {
+        method: 'POST',
+        headers: { 'x-owner-token': password },
+      });
+
+      if (response.ok) {
+        setOwnerToken(password);
+        setOwnerMode(true);
+      } else {
+        window.alert('Access denied');
+      }
+    } catch {
+      window.alert('Could not verify access right now. Try again.');
     }
   };
 
@@ -95,6 +111,10 @@ export default function App() {
   }, [ownerMode]);
 
   useEffect(() => {
+    window.localStorage.setItem('ubtan-owner-token', ownerToken);
+  }, [ownerToken]);
+
+  useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
       const isOwnerShortcut = (event.ctrlKey || event.metaKey) && event.altKey && event.key.toLowerCase() === 'o';
       if (isOwnerShortcut) {
@@ -117,7 +137,7 @@ export default function App() {
     try {
       const response = await fetch('/api/services', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-owner-token': ownerToken },
         body: JSON.stringify({ title, description }),
       });
 
@@ -126,9 +146,11 @@ export default function App() {
         setServices((current) => [created, ...current]);
         setNewServiceTitle('');
         setNewServiceDescription('');
+      } else {
+        window.alert('Could not save the service. Try again.');
       }
     } catch {
-      // Ignore failed saves.
+      window.alert('Could not save the service. Try again.');
     }
   };
 
@@ -136,12 +158,17 @@ export default function App() {
     if (typeof serviceId !== 'number') return;
 
     try {
-      const response = await fetch(`/api/services/${serviceId}`, { method: 'DELETE' });
+      const response = await fetch(`/api/services/${serviceId}`, {
+        method: 'DELETE',
+        headers: { 'x-owner-token': ownerToken },
+      });
       if (response.ok) {
         setServices((current) => current.filter((service) => service.id !== serviceId));
+      } else {
+        window.alert('Could not remove the service. Try again.');
       }
     } catch {
-      // Ignore failed deletes.
+      window.alert('Could not remove the service. Try again.');
     }
   };
 
@@ -420,7 +447,7 @@ export default function App() {
           <div className="flex flex-col items-center gap-4 mb-16">
             {isReturningVisitor && (
               <ScrollReveal direction="scale">
-                <ReviewModal>
+                <ReviewModal onReviewAdded={(review) => setReviews((current) => [review, ...current])}>
                   <button className="px-6 py-3 border border-primary text-primary text-xs tracking-widest uppercase hover:bg-primary hover:text-primary-foreground transition-all duration-300">
                     Leave a Review
                   </button>

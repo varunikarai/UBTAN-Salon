@@ -48,4 +48,14 @@ Thumbs.db
 .cache/
 .local/
 
-.env.local.example
+# env files (never commit real secrets, the .example file is the only one that should be tracked)
+.env
+.env.local
+.env.*.local
+!.env.local.example
+
+# local-only notes, not for the public repo
+private-notes.md
+
+# Replit Agent build artifacts, not needed in the shipped repo
+attached_assets/
