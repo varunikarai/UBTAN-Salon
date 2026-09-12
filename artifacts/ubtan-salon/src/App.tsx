@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'wouter';
 import { BookingModal } from './components/BookingModal';
 import { GalleryModal } from './components/GalleryModal';
 import { ReviewModal } from './components/ReviewModal';
@@ -210,7 +212,16 @@ export default function App() {
       {/* Navigation */}
       <nav className="floating-panel fixed top-0 left-0 right-0 z-50 border-b border-primary/10 bg-background/75 py-4 shadow-[0_8px_40px_rgba(0,0,0,0.24)] backdrop-blur-xl">
         <div className="container mx-auto px-6 flex items-center justify-between gap-4">
-          <div className="text-2xl font-serif text-primary tracking-widest uppercase">UBTAN</div>
+          <Link href="/our-story">
+            <motion.span
+              className="cursor-pointer text-2xl font-serif text-primary tracking-widest uppercase"
+              whileHover={{ scale: 1.05, letterSpacing: '0.12em' }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            >
+              UBTAN
+            </motion.span>
+          </Link>
           <div className="hidden md:flex items-center space-x-8 text-sm font-light tracking-wide text-muted-foreground">
             <a href="#about" className="hover:text-primary transition-colors">About</a>
             <a href="#services" className="hover:text-primary transition-colors">Services</a>
@@ -250,13 +261,6 @@ export default function App() {
           </ScrollReveal>
           <ScrollReveal delay={400}>
             <p className="mb-8 text-xl font-serif italic text-muted-foreground md:text-2xl">“Blossom into a new u...”</p>
-          </ScrollReveal>
-          <ScrollReveal delay={500}>
-            <div className="mb-10 flex flex-wrap items-center justify-center gap-3 text-[0.68rem] uppercase tracking-[0.3em] text-muted-foreground/80">
-              <span className="rounded-full border border-primary/20 px-4 py-2">Private consultations</span>
-              <span className="rounded-full border border-primary/20 px-4 py-2">Quiet comfort</span>
-              <span className="rounded-full border border-primary/20 px-4 py-2">Luxury rituals</span>
-            </div>
           </ScrollReveal>
           <ScrollReveal delay={600}>
             <BookingModal>
