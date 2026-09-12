@@ -24,6 +24,16 @@ type GalleryItem = {
   alt: string;
 };
 
+type BookingItem = {
+  id: number;
+  name: string;
+  phone: string;
+  service: string;
+  preferredDate: string;
+  message: string | null;
+  createdAt: string;
+};
+
 const defaultServices: ServiceItem[] = [
   { title: 'Hair Architecture', description: 'Precision cuts, bespoke coloring, and restorative rituals tailored to your hair profile.' },
   { title: 'Skin Radiance', description: 'Clinical facials and luminous treatments designed for a polished glow.' },
@@ -44,6 +54,7 @@ export default function App() {
   const [services, setServices] = useState<ServiceItem[]>(defaultServices);
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
+  const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [newServiceTitle, setNewServiceTitle] = useState('');
   const [newServiceDescription, setNewServiceDescription] = useState('');
   const isReturningVisitor = useReturningVisitor();
@@ -113,6 +124,28 @@ export default function App() {
   useEffect(() => {
     window.localStorage.setItem('ubtan-owner-token', ownerToken);
   }, [ownerToken]);
+
+  useEffect(() => {
+    if (!ownerMode || !ownerToken) return;
+
+    const fetchBookings = async () => {
+      try {
+        const response = await fetch('/api/bookings', {
+          headers: { 'x-owner-token': ownerToken },
+        });
+        if (response.ok) {
+          const data = await response.json() as BookingItem[];
+          if (Array.isArray(data)) {
+            setBookings(data);
+          }
+        }
+      } catch {
+        // Leave the last known list in place if this fetch fails.
+      }
+    };
+
+    fetchBookings();
+  }, [ownerMode, ownerToken]);
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
@@ -391,6 +424,28 @@ export default function App() {
                           </button>
                         </div>
                       ))}
+                    </div>
+
+                    <div className="border-t border-white/10 pt-6">
+                      <p className="text-xs uppercase tracking-[0.3em] text-primary">Booking Requests</p>
+                      {bookings.length === 0 ? (
+                        <p className="mt-3 text-xs font-light text-muted-foreground">No booking requests yet.</p>
+                      ) : (
+                        <div className="mt-3 space-y-3 max-h-64 overflow-y-auto">
+                          {bookings.map((booking) => (
+                            <div key={booking.id} className="rounded-sm border border-white/10 bg-background/50 px-4 py-3">
+                              <div className="flex items-center justify-between gap-3">
+                                <p className="font-serif text-sm text-foreground">{booking.name}</p>
+                                <span className="text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">{booking.preferredDate}</span>
+                              </div>
+                              <p className="mt-1 text-xs font-light text-muted-foreground">{booking.service} &middot; {booking.phone}</p>
+                              {booking.message && (
+                                <p className="mt-1 text-xs font-light italic text-muted-foreground">"{booking.message}"</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

@@ -1,10 +1,12 @@
 import { Router } from "express";
 import {
+  createBooking,
   createGalleryItem,
   createReview,
   createService,
   deleteGalleryItem,
   deleteService,
+  listBookings,
   listGalleryItems,
   listReviews,
   listServices,
@@ -84,6 +86,37 @@ router.delete("/gallery/:id", requireOwnerAuth, (req, res) => {
 
   deleteGalleryItem(id);
   return res.json({ success: true });
+});
+
+router.get("/bookings", requireOwnerAuth, (_req, res) => {
+  res.json(listBookings());
+});
+
+router.post("/bookings", (req, res) => {
+  const { name, phone, service, preferredDate, message } = req.body as {
+    name?: string;
+    phone?: string;
+    service?: string;
+    preferredDate?: string;
+    message?: string;
+  };
+
+  if (!name?.trim() || !phone?.trim() || !service?.trim() || !preferredDate?.trim()) {
+    return res.status(400).json({ error: "name, phone, service, and preferredDate are required" });
+  }
+
+  if (name.length > 200 || phone.length > 50 || service.length > 200 || (message?.length ?? 0) > 2000) {
+    return res.status(400).json({ error: "one or more fields exceed the maximum length" });
+  }
+
+  const booking = createBooking(
+    name.trim(),
+    phone.trim(),
+    service.trim(),
+    preferredDate.trim(),
+    message?.trim() || null,
+  );
+  return res.status(201).json(booking);
 });
 
 export default router;

@@ -34,6 +34,16 @@ function seedDefaults() {
       alt TEXT NOT NULL,
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
+
+    CREATE TABLE IF NOT EXISTS bookings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      service TEXT NOT NULL,
+      preferred_date TEXT NOT NULL,
+      message TEXT,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
   `);
 
   const serviceCount = db.prepare("SELECT COUNT(*) as count FROM services").get() as { count: number };
@@ -197,4 +207,55 @@ export function createGalleryItem(src: string, alt: string): GalleryItemRecord {
 
 export function deleteGalleryItem(id: number) {
   db.prepare("DELETE FROM gallery_items WHERE id = ?").run(id);
+}
+
+export type BookingRecord = {
+  id: number;
+  name: string;
+  phone: string;
+  service: string;
+  preferredDate: string;
+  message: string | null;
+  createdAt: string;
+};
+
+export function listBookings(): BookingRecord[] {
+  const rows = db.prepare(`
+    SELECT id, name, phone, service, preferred_date as preferredDate, message, created_at as createdAt
+    FROM bookings
+    ORDER BY id DESC
+  `).all() as Array<{
+    id: number;
+    name: string;
+    phone: string;
+    service: string;
+    preferredDate: string;
+    message: string | null;
+    createdAt: string;
+  }>;
+
+  return rows.map((row) => ({ ...row }));
+}
+
+export function createBooking(
+  name: string,
+  phone: string,
+  service: string,
+  preferredDate: string,
+  message: string | null,
+): BookingRecord {
+  const result = db.prepare(`
+    INSERT INTO bookings (name, phone, service, preferred_date, message)
+    VALUES (?, ?, ?, ?, ?)
+  `).run(name, phone, service, preferredDate, message);
+
+  return {
+    id: Number(result.lastInsertRowid),
+    name,
+    phone,
+    service,
+    preferredDate,
+    message,
+    createdAt: new Date().toISOString(),
+  };
 }
