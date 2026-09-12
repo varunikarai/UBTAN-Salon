@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Route, Switch, useLocation } from 'wouter';
 import App from './App';
@@ -12,6 +13,10 @@ const PAGE_TRANSITION = {
 
 export default function AppRouter() {
   const [location] = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
 
   return (
     <AnimatePresence mode="wait">
