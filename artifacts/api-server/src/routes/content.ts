@@ -12,6 +12,7 @@ import {
   listServices,
 } from "../lib/database";
 import { requireOwnerAuth } from "../middlewares/ownerAuth";
+import { publicWriteLimiter } from "../middlewares/publicWriteLimiter";
 
 const router = Router();
 
@@ -47,7 +48,7 @@ router.get("/reviews", (_req, res) => {
   res.json(listReviews());
 });
 
-router.post("/reviews", (req, res) => {
+router.post("/reviews", publicWriteLimiter, (req, res) => {
   const { name, body, rating } = req.body as { name?: string; body?: string; rating?: number };
   if (
     !name ||
@@ -58,6 +59,10 @@ router.post("/reviews", (req, res) => {
     rating > 5
   ) {
     return res.status(400).json({ error: "name, body, and an integer rating from 1 to 5 are required" });
+  }
+
+  if (name.length > 200 || body.length > 2000) {
+    return res.status(400).json({ error: "name or body exceeds the maximum length" });
   }
 
   const review = createReview(name, body, rating);
@@ -92,7 +97,7 @@ router.get("/bookings", requireOwnerAuth, (_req, res) => {
   res.json(listBookings());
 });
 
-router.post("/bookings", (req, res) => {
+router.post("/bookings", publicWriteLimiter, (req, res) => {
   const { name, phone, service, preferredDate, message } = req.body as {
     name?: string;
     phone?: string;
