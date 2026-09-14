@@ -23,7 +23,12 @@ const TILE_POSITIONS = [
   { top: '0', left: '100vw' },
 ];
 
-const FEATHER_MASK = 'radial-gradient(circle at center, black 45%, transparent 78%)';
+// Two feather strengths: "soft" keeps most of the tile so the base layer
+// still reads as full coverage with only its hard corners eased off, while
+// "tight" fades much earlier, since those layers are meant to dissolve into
+// whatever is underneath rather than to cover anything by themselves.
+const FEATHER_SOFT = 'radial-gradient(circle at center, black 70%, transparent 100%)';
+const FEATHER_TIGHT = 'radial-gradient(circle at center, black 40%, transparent 90%)';
 
 function PanLayer({
   durationS,
@@ -33,7 +38,7 @@ function PanLayer({
   brightness = 1,
   saturate = 1,
   blend = 'normal',
-  feather = false,
+  feather,
 }: {
   durationS: number;
   opacity: number;
@@ -42,8 +47,9 @@ function PanLayer({
   brightness?: number;
   saturate?: number;
   blend?: CSSProperties['mixBlendMode'];
-  feather?: boolean;
+  feather?: 'soft' | 'tight';
 }) {
+  const mask = feather === 'soft' ? FEATHER_SOFT : feather === 'tight' ? FEATHER_TIGHT : undefined;
   const filter = [
     blurPx ? `blur(${blurPx}px)` : '',
     brightness !== 1 ? `brightness(${brightness})` : '',
@@ -73,8 +79,8 @@ function PanLayer({
             style={{
               top: pos.top,
               left: pos.left,
-              maskImage: feather ? FEATHER_MASK : undefined,
-              WebkitMaskImage: feather ? FEATHER_MASK : undefined,
+              maskImage: mask,
+              WebkitMaskImage: mask,
             }}
           />
         ))}
@@ -86,9 +92,9 @@ function PanLayer({
 export function GlobalBackground() {
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-      <PanLayer durationS={85} opacity={0.3} blurPx={14} scale={1.2} />
-      <PanLayer durationS={50} opacity={0.42} feather />
-      <PanLayer durationS={28} opacity={0.18} brightness={1.5} saturate={1.3} blend="screen" feather />
+      <PanLayer durationS={85} opacity={0.32} blurPx={16} scale={1.25} feather="soft" />
+      <PanLayer durationS={50} opacity={0.4} feather="tight" />
+      <PanLayer durationS={28} opacity={0.12} brightness={1.15} blend="screen" feather="tight" />
       <div className="absolute inset-0 bg-background/50" />
     </div>
   );
