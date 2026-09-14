@@ -7,6 +7,7 @@ import { ReviewModal } from './components/ReviewModal';
 import { ScrollReveal } from './components/ScrollReveal';
 import { TiltCard } from './components/TiltCard';
 import { Heading3D } from './components/Heading3D';
+import { HeroLogo } from './components/HeroLogo';
 import { Menu, X } from 'lucide-react';
 import { useReturningVisitor } from './hooks/useReturningVisitor';
 
@@ -219,10 +220,13 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full bg-background text-foreground selection:bg-primary/30 selection:text-primary">
+      <HeroLogo />
+
       {/* Navigation */}
       <nav className="floating-panel fixed top-0 left-0 right-0 z-50 border-b border-primary/10 bg-background/75 py-4 backdrop-blur-xl">
         <div className="container mx-auto px-6 flex items-center justify-between gap-4">
-          <Link href="/our-story">
+          <Link href="/our-story" className="flex items-center gap-2">
+            <img src="/images/logo.svg" alt="" aria-hidden="true" className="block h-9 w-auto shrink-0" />
             <motion.span
               className="inline-block cursor-pointer text-2xl font-serif text-primary tracking-widest uppercase"
               style={{ transformOrigin: 'left center' }}
