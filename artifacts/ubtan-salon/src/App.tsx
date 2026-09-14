@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'wouter';
 import { BookingModal } from './components/BookingModal';
 import { GalleryModal } from './components/GalleryModal';
 import { ReviewModal } from './components/ReviewModal';
 import { ScrollReveal } from './components/ScrollReveal';
+import { TiltCard } from './components/TiltCard';
 import { useReturningVisitor } from './hooks/useReturningVisitor';
 
 type ServiceItem = {
@@ -60,6 +61,16 @@ export default function App() {
   const [newServiceTitle, setNewServiceTitle] = useState('');
   const [newServiceDescription, setNewServiceDescription] = useState('');
   const isReturningVisitor = useReturningVisitor();
+
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress: heroProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const heroBgY = useTransform(heroProgress, [0, 1], ['0%', '18%']);
+  const heroBgScale = useTransform(heroProgress, [0, 1], [1, 1.15]);
+  const heroOrbTopY = useTransform(heroProgress, [0, 1], ['0%', '55%']);
+  const heroOrbBottomY = useTransform(heroProgress, [0, 1], ['0%', '-40%']);
+  const heroContentY = useTransform(heroProgress, [0, 1], ['0%', '35%']);
+  const heroContentScale = useTransform(heroProgress, [0, 1], [1, 0.9]);
+  const heroContentOpacity = useTransform(heroProgress, [0, 0.8], [1, 0]);
 
   const handleOwnerAccess = async () => {
     const password = window.prompt('Enter owner access code');
@@ -245,15 +256,29 @@ export default function App() {
       </nav>
 
       {/* Hero */}
-      <section className="relative flex h-screen items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img src="/images/hero-bg.png" alt="Luxury Salon Interior" className="h-full w-full object-cover opacity-40" />
+      <section ref={heroRef} className="relative flex h-screen items-center justify-center overflow-hidden">
+        <div className="absolute inset-0" style={{ perspective: 1200 }}>
+          <motion.img
+            src="/images/hero-bg.png"
+            alt="Luxury Salon Interior"
+            className="h-full w-full object-cover opacity-40"
+            style={{ y: heroBgY, scale: heroBgScale }}
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.18),transparent_55%)]" />
-          <div className="pointer-events-none absolute left-8 top-24 h-40 w-40 rounded-full border border-primary/15 blur-3xl" />
-          <div className="pointer-events-none absolute bottom-16 right-8 h-56 w-56 rounded-full border border-primary/10 blur-3xl" />
+          <motion.div
+            style={{ y: heroOrbTopY }}
+            className="pointer-events-none absolute left-8 top-24 h-40 w-40 rounded-full border border-primary/15 blur-3xl"
+          />
+          <motion.div
+            style={{ y: heroOrbBottomY }}
+            className="pointer-events-none absolute bottom-16 right-8 h-56 w-56 rounded-full border border-primary/10 blur-3xl"
+          />
         </div>
-        <div className="relative z-10 mx-auto mt-20 max-w-4xl px-6 text-center">
+        <motion.div
+          style={{ y: heroContentY, scale: heroContentScale, opacity: heroContentOpacity, transformPerspective: 1200 }}
+          className="relative z-10 mx-auto mt-20 max-w-4xl px-6 text-center"
+        >
           <ScrollReveal>
             <span className="text-primary text-sm tracking-[0.3em] uppercase mb-4 block">Ladies-Only Premium Salon</span>
           </ScrollReveal>
@@ -270,7 +295,7 @@ export default function App() {
               </button>
             </BookingModal>
           </ScrollReveal>
-        </div>
+        </motion.div>
       </section>
 
       {/* About */}
@@ -324,10 +349,12 @@ export default function App() {
               { title: "Threading & Waxing", desc: "Gentle, precise hair removal using the finest hard waxes and traditional techniques." }
             ].map((service, i) => (
               <ScrollReveal key={i} delay={i * 100} direction="scale">
-                <div className="luxury-card group h-full p-8 transition-all duration-500 hover:-translate-y-1">
-                  <h3 className="mb-4 text-xl font-serif text-primary transition-colors group-hover:text-primary/90">{service.title}</h3>
-                  <p className="font-light leading-relaxed text-muted-foreground">{service.desc}</p>
-                </div>
+                <TiltCard className="h-full">
+                  <div className="luxury-card group h-full p-8 transition-all duration-500 hover:-translate-y-1">
+                    <h3 className="mb-4 text-xl font-serif text-primary transition-colors group-hover:text-primary/90">{service.title}</h3>
+                    <p className="font-light leading-relaxed text-muted-foreground">{service.desc}</p>
+                  </div>
+                </TiltCard>
               </ScrollReveal>
             ))}
           </div>
@@ -346,7 +373,7 @@ export default function App() {
             </div>
           </ScrollReveal>
 
-          <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className={`grid gap-8 ${ownerMode ? 'lg:grid-cols-[1.15fr_0.85fr]' : ''}`}>
             <ScrollReveal delay={120} direction="left">
               <div className="luxury-card p-8 md:p-10">
                 <div className="mb-6 flex items-center justify-between gap-4">
@@ -373,6 +400,7 @@ export default function App() {
               </div>
             </ScrollReveal>
 
+            {ownerMode && (
             <ScrollReveal delay={180} direction="right">
               <div className="luxury-card bg-background/90 p-8 md:p-10">
                 <div className="flex items-center justify-between gap-4">
@@ -380,17 +408,10 @@ export default function App() {
                     <p className="text-xs uppercase tracking-[0.3em] text-primary">Owner Access</p>
                     <h3 className="mt-2 text-2xl font-serif text-foreground">Manage the Menu</h3>
                   </div>
-                  {ownerMode && (
-                    <span className="text-[0.65rem] uppercase tracking-[0.28em] text-muted-foreground">Editing On</span>
-                  )}
+                  <span className="text-[0.65rem] uppercase tracking-[0.28em] text-muted-foreground">Editing On</span>
                 </div>
 
-                {!ownerMode ? (
-                  <div className="mt-6 rounded-sm border border-white/10 bg-background/50 p-4 text-center text-sm font-light leading-relaxed text-muted-foreground">
-                    Private editing controls are available to the owner through a secure access shortcut.
-                  </div>
-                ) : (
-                  <div className="mt-6 space-y-6">
+                <div className="mt-6 space-y-6">
                     <form onSubmit={handleAddService} className="space-y-3">
                       <input
                         value={newServiceTitle}
@@ -452,10 +473,10 @@ export default function App() {
                         </div>
                       )}
                     </div>
-                  </div>
-                )}
+                </div>
               </div>
             </ScrollReveal>
+            )}
           </div>
         </div>
       </section>
