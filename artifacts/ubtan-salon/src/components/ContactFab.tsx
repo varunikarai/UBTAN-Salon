@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Instagram, MessageCircle, Phone, Plus } from 'lucide-react';
+import { ChevronDown, Instagram, MessageCircle, Phone } from 'lucide-react';
 
 // Phone/WhatsApp are derived from the number already published in the site's
 // own Contact section (+91 9999680536). No real Instagram handle was given,
@@ -29,16 +29,16 @@ export function ContactFab() {
               href={action.href}
               target={action.external ? '_blank' : undefined}
               rel={action.external ? 'noopener noreferrer' : undefined}
-              initial={{ opacity: 0, y: 14, scale: 0.8 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 14, scale: 0.8 }}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 14 }}
               transition={{ duration: 0.25, delay: i * 0.05, ease: EASE }}
               className="group flex items-center gap-3"
             >
               <span className="hidden border border-primary/20 bg-background/90 px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-foreground opacity-0 backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 sm:inline-block">
                 {action.label}
               </span>
-              <span className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/30 bg-card text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground sm:h-12 sm:w-12">
+              <span className="flex h-11 w-11 items-center justify-center border border-primary/30 bg-card text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground sm:h-12 sm:w-12">
                 <action.icon className="h-5 w-5" />
               </span>
             </motion.a>
@@ -48,18 +48,16 @@ export function ContactFab() {
       <motion.button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        transition={{ duration: 0.2 }}
-        aria-label={open ? 'Close contact options' : 'Contact us'}
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground sm:h-14 sm:w-14"
+        aria-expanded={open}
+        className="flex items-center gap-2 border border-primary/30 bg-background/90 px-4 py-3 text-xs uppercase tracking-[0.2em] text-primary backdrop-blur-sm transition-colors duration-300 hover:bg-primary hover:text-primary-foreground active:bg-primary/80"
       >
+        Contact Us
         <motion.span
-          animate={{ rotate: open ? 135 : 0 }}
-          transition={{ duration: 0.3, ease: EASE }}
+          animate={{ rotate: open ? 180 : 0 }}
+          transition={{ duration: 0.25, ease: EASE }}
           className="flex items-center justify-center"
         >
-          <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
+          <ChevronDown className="h-3.5 w-3.5" />
         </motion.span>
       </motion.button>
     </div>

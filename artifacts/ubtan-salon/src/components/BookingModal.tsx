@@ -95,10 +95,10 @@ export function BookingModal({ children }: { children: React.ReactNode }) {
             className="py-10 text-center"
           >
             <motion.div
-              initial={{ scale: 0, rotate: -20 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-primary/30 bg-primary/10"
+              initial={{ scale: 0.6, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="mx-auto mb-6 flex h-16 w-16 items-center justify-center border border-primary/30 bg-primary/10"
             >
               <CheckCircle2 className="h-8 w-8 text-primary" />
             </motion.div>
