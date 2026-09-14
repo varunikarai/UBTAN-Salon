@@ -1,100 +1,86 @@
 import type { CSSProperties } from 'react';
+import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
 
 // The site's one background image (hero-bg.png), fixed behind every page and
-// section, built as three depth layers of the SAME photo rather than one
-// flat slab sliding across the screen:
-//   - back:  large, blurred, slow, always full-coverage. This is the layer
-//            that guarantees there is never a black gap behind everything
-//            else, using the proven 4-tile grid (see PanLayer below).
-//   - mid:   normal size and sharpness, medium speed, edges feathered with
-//            a radial mask so each tile dissolves into the back layer
-//            instead of showing a hard rectangular seam.
-//   - front: brighter/more saturated, fastest, screen-blended so it only
-//            ever adds light (a glint), also feathered.
-// Layers move at different speeds along the same top-right-to-bottom-left
-// path, which is what reads as real depth (distant things drift slower)
-// rather than one image translating. No drawn shapes are added, only this
-// photo, processed and layered, plus a flat scrim on top for text contrast.
+// section, as three depth layers of that SAME single photo. Earlier versions
+// tiled copies of the image side by side to cover the whole page, which
+// always showed as "the same picture twice", hero-bg.png is one scenic
+// photo, not a repeatable pattern, so no amount of feathering hides a tile
+// seam. This version never tiles anything: each layer is exactly one
+// oversized copy of the photo that only ever pans within its own overhang,
+// so there is never a second copy on screen to seam against.
+//
+// Each layer combines two motions:
+//   1. A slow autonomous pan (CSS), the same top-right-to-bottom-left
+//      direction, that runs once over minutes and holds at its end state
+//      (animation-fill-mode: forwards), it never reverses and never loops
+//      back through a visible jump.
+//   2. A real scroll-linked parallax offset (framer-motion useScroll), so
+//      the layers actually separate at different rates as you scroll, not
+//      just something happening on a timer regardless of scroll.
+// Depth itself comes from blur/scale/brightness differing per layer, back
+// layer slow and blurred, front layer fast and brighter. No drawn shapes
+// are added, only this photo, panned and layered, plus a flat scrim on top
+// for text contrast.
 
-const TILE_POSITIONS = [
-  { top: '-100vh', left: '0' },
-  { top: '-100vh', left: '100vw' },
-  { top: '0', left: '0' },
-  { top: '0', left: '100vw' },
+type Layer = {
+  blurPx?: number;
+  opacity: number;
+  brightness?: number;
+  blend?: CSSProperties['mixBlendMode'];
+  panDurationS: number;
+  panX: string;
+  panY: string;
+  parallaxCapPx: number;
+};
+
+const LAYERS: Layer[] = [
+  { blurPx: 16, opacity: 0.34, panDurationS: 320, panX: '-6%', panY: '6%', parallaxCapPx: 26 },
+  { opacity: 0.44, panDurationS: 240, panX: '-10%', panY: '10%', parallaxCapPx: 55 },
+  { opacity: 0.14, brightness: 1.15, blend: 'screen', panDurationS: 170, panX: '-13%', panY: '13%', parallaxCapPx: 90 },
 ];
 
-// Two feather strengths: "soft" keeps most of the tile so the base layer
-// still reads as full coverage with only its hard corners eased off, while
-// "tight" fades much earlier, since those layers are meant to dissolve into
-// whatever is underneath rather than to cover anything by themselves.
-const FEATHER_SOFT = 'radial-gradient(circle at center, black 70%, transparent 100%)';
-const FEATHER_TIGHT = 'radial-gradient(circle at center, black 40%, transparent 90%)';
-
-function PanLayer({
-  durationS,
-  opacity,
-  blurPx = 0,
-  scale = 1,
-  brightness = 1,
-  saturate = 1,
-  blend = 'normal',
-  feather,
-}: {
-  durationS: number;
-  opacity: number;
-  blurPx?: number;
-  scale?: number;
-  brightness?: number;
-  saturate?: number;
-  blend?: CSSProperties['mixBlendMode'];
-  feather?: 'soft' | 'tight';
-}) {
-  const mask = feather === 'soft' ? FEATHER_SOFT : feather === 'tight' ? FEATHER_TIGHT : undefined;
+function BackgroundLayer({ layer, scrollY }: { layer: Layer; scrollY: MotionValue<number> }) {
+  const parallaxY = useTransform(scrollY, [0, 3200], [0, layer.parallaxCapPx], { clamp: true });
   const filter = [
-    blurPx ? `blur(${blurPx}px)` : '',
-    brightness !== 1 ? `brightness(${brightness})` : '',
-    saturate !== 1 ? `saturate(${saturate})` : '',
+    layer.blurPx ? `blur(${layer.blurPx}px)` : '',
+    layer.brightness && layer.brightness !== 1 ? `brightness(${layer.brightness})` : '',
   ]
     .filter(Boolean)
     .join(' ');
 
   return (
-    <div
+    <motion.div
       className="absolute inset-0"
       style={{
-        opacity,
+        y: parallaxY,
+        opacity: layer.opacity,
         filter: filter || undefined,
-        mixBlendMode: blend,
-        transform: scale !== 1 ? `scale(${scale})` : undefined,
+        mixBlendMode: layer.blend,
       }}
     >
       <div
-        className="absolute inset-0 will-change-transform"
-        style={{ animation: `flow-diagonal ${durationS}s linear infinite` }}
-      >
-        {TILE_POSITIONS.map((pos, i) => (
-          <div
-            key={i}
-            className="absolute h-screen w-screen bg-[url('/images/hero-bg.png')] bg-cover bg-center"
-            style={{
-              top: pos.top,
-              left: pos.left,
-              maskImage: mask,
-              WebkitMaskImage: mask,
-            }}
-          />
-        ))}
-      </div>
-    </div>
+        className="absolute -inset-[30%] bg-[url('/images/hero-bg.png')] bg-cover bg-center will-change-transform"
+        style={
+          {
+            '--pan-x': layer.panX,
+            '--pan-y': layer.panY,
+            animation: `bg-pan ${layer.panDurationS}s cubic-bezier(0.22, 1, 0.36, 1) forwards`,
+          } as CSSProperties
+        }
+      />
+    </motion.div>
   );
 }
 
 export function GlobalBackground() {
+  const { scrollY } = useScroll();
+
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-      <PanLayer durationS={85} opacity={0.32} blurPx={16} scale={1.25} feather="soft" />
-      <PanLayer durationS={50} opacity={0.4} feather="tight" />
-      <PanLayer durationS={28} opacity={0.12} brightness={1.15} blend="screen" feather="tight" />
+      {LAYERS.map((layer, i) => (
+        <BackgroundLayer key={i} layer={layer} scrollY={scrollY} />
+      ))}
       <div className="absolute inset-0 bg-background/50" />
     </div>
   );
