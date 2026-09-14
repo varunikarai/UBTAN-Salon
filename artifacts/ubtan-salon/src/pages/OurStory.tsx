@@ -140,7 +140,7 @@ export function OurStory() {
         </div>
       </section>
 
-      <footer className="py-12 border-t border-white/5 bg-background text-center">
+      <footer className="pb-24 pt-12 sm:py-12 border-t border-white/5 bg-background text-center">
         <div className="container mx-auto px-6">
           <p className="text-2xl font-serif tracking-widest text-primary/50 mb-4">UBTAN</p>
           <p className="text-sm font-light text-muted-foreground">&copy; {new Date().getFullYear()} UBTAN Salon by Neelu Rai. All rights reserved.</p>

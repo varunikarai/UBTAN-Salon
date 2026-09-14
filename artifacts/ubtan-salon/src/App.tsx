@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'wouter';
 import { BookingModal } from './components/BookingModal';
 import { GalleryModal } from './components/GalleryModal';
 import { ReviewModal } from './components/ReviewModal';
 import { ScrollReveal } from './components/ScrollReveal';
 import { TiltCard } from './components/TiltCard';
+import { Heading3D, type Heading3DVariant } from './components/Heading3D';
+import { Menu, X } from 'lucide-react';
 import { useReturningVisitor } from './hooks/useReturningVisitor';
 
 type ServiceItem = {
@@ -61,6 +63,8 @@ export default function App() {
   const [newServiceTitle, setNewServiceTitle] = useState('');
   const [newServiceDescription, setNewServiceDescription] = useState('');
   const isReturningVisitor = useReturningVisitor();
+  const [headingVariant, setHeadingVariant] = useState<Heading3DVariant>('flip');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress: heroProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
@@ -220,6 +224,24 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full bg-background text-foreground selection:bg-primary/30 selection:text-primary">
+      {/* TEMP: compare the 3 hero heading animation styles, remove once one is picked */}
+      <div className="fixed top-20 left-1/2 z-[60] flex -translate-x-1/2 gap-2 rounded-full border border-primary/30 bg-background/90 px-3 py-2 shadow-lg backdrop-blur-sm">
+        {(['flip', 'assemble', 'wave'] as const).map((variant) => (
+          <button
+            key={variant}
+            type="button"
+            onClick={() => setHeadingVariant(variant)}
+            className={`rounded-full px-3 py-1 text-[0.65rem] uppercase tracking-[0.15em] transition-colors ${
+              headingVariant === variant
+                ? 'bg-primary text-primary-foreground'
+                : 'text-muted-foreground hover:text-primary'
+            }`}
+          >
+            {variant}
+          </button>
+        ))}
+      </div>
+
       {/* Navigation */}
       <nav className="floating-panel fixed top-0 left-0 right-0 z-50 border-b border-primary/10 bg-background/75 py-4 shadow-[0_8px_40px_rgba(0,0,0,0.24)] backdrop-blur-xl">
         <div className="container mx-auto px-6 flex items-center justify-between gap-4">
@@ -242,17 +264,44 @@ export default function App() {
           </div>
           <div className="flex items-center gap-3">
             <GalleryModal>
-              <button className="flex items-center justify-center px-4 py-2 md:px-5 md:py-2.5 border border-primary/30 text-primary text-xs tracking-widest uppercase hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+              <button className="hidden items-center justify-center px-4 py-2 md:flex md:px-5 md:py-2.5 border border-primary/30 text-primary text-xs tracking-widest uppercase hover:bg-primary hover:text-primary-foreground transition-all duration-300">
                 Gallery
               </button>
             </GalleryModal>
             <BookingModal>
-              <button className="flex items-center justify-center px-4 py-2 md:px-5 md:py-2.5 bg-primary text-primary-foreground text-xs tracking-widest uppercase hover:bg-primary/90 transition-all duration-300">
+              <button className="flex items-center justify-center px-3 py-2 md:px-5 md:py-2.5 bg-primary text-primary-foreground text-xs tracking-widest uppercase hover:bg-primary/90 transition-all duration-300">
                 Book Now
               </button>
             </BookingModal>
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((v) => !v)}
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              className="flex h-9 w-9 items-center justify-center border border-primary/30 text-primary md:hidden"
+            >
+              {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </button>
           </div>
         </div>
+
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden border-t border-primary/10 md:hidden"
+            >
+              <div className="container mx-auto flex flex-col px-6 py-4 text-sm font-light tracking-wide text-muted-foreground">
+                <a href="#about" onClick={() => setMobileMenuOpen(false)} className="border-b border-white/5 py-3 hover:text-primary transition-colors">About</a>
+                <a href="#services" onClick={() => setMobileMenuOpen(false)} className="border-b border-white/5 py-3 hover:text-primary transition-colors">Services</a>
+                <a href="#gallery" onClick={() => setMobileMenuOpen(false)} className="border-b border-white/5 py-3 hover:text-primary transition-colors">Gallery</a>
+                <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="py-3 hover:text-primary transition-colors">Contact</a>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Hero */}
@@ -283,7 +332,14 @@ export default function App() {
             <span className="text-primary text-sm tracking-[0.3em] uppercase mb-4 block">Ladies-Only Premium Salon</span>
           </ScrollReveal>
           <ScrollReveal delay={200}>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif mb-6 text-foreground font-medium">UBTAN</h1>
+            <h1 className="mb-6">
+              <Heading3D
+                key={headingVariant}
+                text="UBTAN"
+                variant={headingVariant}
+                className="text-5xl md:text-7xl lg:text-8xl font-serif text-foreground font-medium"
+              />
+            </h1>
           </ScrollReveal>
           <ScrollReveal delay={400}>
             <p className="mb-8 text-xl font-serif italic text-muted-foreground md:text-2xl">“Blossom into a new u...”</p>
@@ -627,7 +683,7 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 border-t border-white/5 bg-background text-center">
+      <footer className="pb-24 pt-12 sm:py-12 border-t border-white/5 bg-background text-center">
         <div className="container mx-auto px-6">
           <p className="text-2xl font-serif tracking-widest text-primary/50 mb-4">UBTAN</p>
           <p className="text-sm font-light text-muted-foreground">© {new Date().getFullYear()} UBTAN Salon by Neelu Rai. All rights reserved.</p>
