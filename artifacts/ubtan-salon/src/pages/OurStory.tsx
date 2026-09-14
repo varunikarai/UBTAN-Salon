@@ -60,7 +60,6 @@ export function OurStory() {
 
       {/* Page hero */}
       <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden pt-24">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.16),transparent_55%)]" />
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center">
           <ScrollReveal>
             <span className="mb-4 block text-sm uppercase tracking-[0.3em] text-primary">Her Journey</span>
@@ -105,7 +104,7 @@ export function OurStory() {
       </section>
 
       {/* Pull quote */}
-      <section className="bg-card py-28">
+      <section className="py-28">
         <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal direction="scale">
             <div className="mx-auto max-w-2xl text-center">
@@ -139,7 +138,7 @@ export function OurStory() {
         </div>
       </section>
 
-      <footer className="pb-24 pt-12 sm:py-12 border-t border-white/5 bg-background text-center">
+      <footer className="pb-24 pt-12 sm:py-12 border-t border-white/5 text-center">
         <div className="container mx-auto px-6 relative z-10">
           <p className="text-2xl font-serif tracking-widest text-primary/50 mb-4">UBTAN</p>
           <p className="text-sm font-light text-muted-foreground">&copy; {new Date().getFullYear()} UBTAN Salon by Neelu Rai. All rights reserved.</p>

@@ -67,8 +67,6 @@ export default function App() {
 
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress: heroProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const heroBgY = useTransform(heroProgress, [0, 1], ['0%', '22%']);
-  const heroBgScale = useTransform(heroProgress, [0, 1], [1, 1.2]);
   const heroContentY = useTransform(heroProgress, [0, 1], ['0%', '45%']);
   const heroContentScale = useTransform(heroProgress, [0, 1], [1, 0.85]);
   const heroContentOpacity = useTransform(heroProgress, [0, 0.8], [1, 0]);
@@ -285,16 +283,6 @@ export default function App() {
 
       {/* Hero */}
       <section ref={heroRef} className="relative flex h-screen items-center justify-center overflow-hidden">
-        <div className="absolute inset-0" style={{ perspective: 1200 }}>
-          <motion.img
-            src="/images/hero-bg.png"
-            alt="Luxury Salon Interior"
-            className="h-full w-full object-cover opacity-40"
-            style={{ y: heroBgY, scale: heroBgScale }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.18),transparent_55%)]" />
-        </div>
         <motion.div
           style={{ y: heroContentY, scale: heroContentScale, opacity: heroContentOpacity, transformPerspective: 1200 }}
           className="relative z-10 mx-auto mt-20 max-w-4xl px-6 text-center"
@@ -324,7 +312,7 @@ export default function App() {
       </section>
 
       {/* About */}
-      <section id="about" className="py-32 bg-card relative overflow-hidden">
+      <section id="about" className="py-32 relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-8">
             <ScrollReveal>
@@ -353,7 +341,7 @@ export default function App() {
       </section>
 
       {/* Services */}
-      <section id="services" className="py-32 bg-background">
+      <section id="services" className="py-32">
         <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
             <div className="text-center max-w-2xl mx-auto mb-20">
@@ -385,8 +373,7 @@ export default function App() {
       </section>
 
       {/* Services Menu Management */}
-      <section id="menu" className="py-32 bg-card relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(212,175,55,0.12),transparent_45%)]" />
+      <section id="menu" className="py-32 relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
             <div className="text-center max-w-2xl mx-auto mb-14">
@@ -503,7 +490,7 @@ export default function App() {
       </section>
 
       {/* Why Choose Us */}
-      <section id="gallery" className="py-32 bg-card relative overflow-hidden">
+      <section id="gallery" className="py-32 relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
             <div className="text-center max-w-2xl mx-auto mb-20">
@@ -535,7 +522,7 @@ export default function App() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-32 bg-background relative overflow-hidden">
+      <section className="py-32 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
         <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
@@ -593,7 +580,7 @@ export default function App() {
       </section>
 
       {/* Contact */}
-      <section id="contact" className="py-32 bg-card relative">
+      <section id="contact" className="py-32 relative">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
         <div className="container mx-auto px-6 relative z-10">
           <div className="flex flex-col lg:flex-row gap-16 justify-between items-center">
@@ -646,7 +633,7 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="pb-24 pt-12 sm:py-12 border-t border-white/5 bg-background text-center">
+      <footer className="pb-24 pt-12 sm:py-12 border-t border-white/5 text-center">
         <div className="container mx-auto px-6 relative z-10">
           <p className="text-2xl font-serif tracking-widest text-primary/50 mb-4">UBTAN</p>
           <p className="text-sm font-light text-muted-foreground">© {new Date().getFullYear()} UBTAN Salon by Neelu Rai. All rights reserved.</p>

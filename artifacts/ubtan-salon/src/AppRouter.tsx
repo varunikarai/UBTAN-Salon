@@ -4,7 +4,7 @@ import { Route, Switch, useLocation } from 'wouter';
 import App from './App';
 import { OurStory } from './pages/OurStory';
 import { ContactFab } from './components/ContactFab';
-import { FlowingVine } from './components/FlowingVine';
+import { GlobalBackground } from './components/GlobalBackground';
 
 const PAGE_TRANSITION = {
   initial: { opacity: 0, y: 12 },
@@ -22,7 +22,7 @@ export default function AppRouter() {
 
   return (
     <>
-      <FlowingVine />
+      <GlobalBackground />
       <AnimatePresence mode="wait">
         <motion.div
           key={location}
