@@ -63,7 +63,7 @@ export default function App() {
   const [newServiceTitle, setNewServiceTitle] = useState('');
   const [newServiceDescription, setNewServiceDescription] = useState('');
   const isReturningVisitor = useReturningVisitor();
-  const [headingVariant, setHeadingVariant] = useState<Heading3DVariant>('flip');
+  const [headingVariant, setHeadingVariant] = useState<Heading3DVariant>('shatter');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const heroRef = useRef<HTMLElement>(null);
@@ -224,9 +224,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full bg-background text-foreground selection:bg-primary/30 selection:text-primary">
-      {/* TEMP: compare the 3 hero heading animation styles, remove once one is picked */}
-      <div className="fixed top-20 left-1/2 z-[60] flex -translate-x-1/2 gap-2 rounded-full border border-primary/30 bg-background/90 px-3 py-2 shadow-lg backdrop-blur-sm">
-        {(['flip', 'assemble', 'wave'] as const).map((variant) => (
+      {/* TEMP: compare the hero heading animation styles, remove once one is picked */}
+      <div className="fixed top-20 left-1/2 z-[60] flex max-w-[92vw] -translate-x-1/2 flex-wrap justify-center gap-2 rounded-2xl border border-primary/30 bg-background/90 px-3 py-2 shadow-lg backdrop-blur-sm">
+        {(['flip', 'assemble', 'wave', 'shatter', 'extrude', 'flythrough'] as const).map((variant) => (
           <button
             key={variant}
             type="button"
