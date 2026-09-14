@@ -35,10 +35,10 @@ export function ContactFab() {
               transition={{ duration: 0.25, delay: i * 0.05, ease: EASE }}
               className="group flex items-center gap-3"
             >
-              <span className="hidden rounded-sm border border-primary/20 bg-background/90 px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-foreground opacity-0 shadow-lg backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 sm:inline-block">
+              <span className="hidden border border-primary/20 bg-background/90 px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-foreground opacity-0 backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 sm:inline-block">
                 {action.label}
               </span>
-              <span className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/30 bg-card text-primary shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground sm:h-12 sm:w-12">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/30 bg-card text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground sm:h-12 sm:w-12">
                 <action.icon className="h-5 w-5" />
               </span>
             </motion.a>
@@ -52,7 +52,7 @@ export function ContactFab() {
         whileTap={{ scale: 0.95 }}
         transition={{ duration: 0.2 }}
         aria-label={open ? 'Close contact options' : 'Contact us'}
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_12px_32px_rgba(212,175,55,0.35)] sm:h-14 sm:w-14"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground sm:h-14 sm:w-14"
       >
         <motion.span
           animate={{ rotate: open ? 135 : 0 }}

@@ -6,9 +6,8 @@ import { GalleryModal } from './components/GalleryModal';
 import { ReviewModal } from './components/ReviewModal';
 import { ScrollReveal } from './components/ScrollReveal';
 import { TiltCard } from './components/TiltCard';
-import { Heading3D, type Heading3DVariant } from './components/Heading3D';
+import { Heading3D } from './components/Heading3D';
 import { Menu, X } from 'lucide-react';
-import { LeafSprig } from './components/LeafSprig';
 import { useReturningVisitor } from './hooks/useReturningVisitor';
 
 type ServiceItem = {
@@ -64,24 +63,14 @@ export default function App() {
   const [newServiceTitle, setNewServiceTitle] = useState('');
   const [newServiceDescription, setNewServiceDescription] = useState('');
   const isReturningVisitor = useReturningVisitor();
-  const [headingVariant, setHeadingVariant] = useState<Heading3DVariant>('extrude');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress: heroProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const heroBgY = useTransform(heroProgress, [0, 1], ['0%', '18%']);
-  const heroBgScale = useTransform(heroProgress, [0, 1], [1, 1.15]);
-  const heroOrbTopY = useTransform(heroProgress, [0, 1], ['0%', '55%']);
-  const heroOrbBottomY = useTransform(heroProgress, [0, 1], ['0%', '-40%']);
-  const heroLeafY = useTransform(heroProgress, [0, 1], ['0%', '75%']);
-  const heroLeafRotate = useTransform(heroProgress, [0, 1], [0, 12]);
-
-  const aboutRef = useRef<HTMLElement>(null);
-  const { scrollYProgress: aboutProgress } = useScroll({ target: aboutRef, offset: ['start end', 'end start'] });
-  const aboutLeafY = useTransform(aboutProgress, [0, 1], ['-20%', '20%']);
-  const aboutLeafRotate = useTransform(aboutProgress, [0, 1], [-10, 10]);
-  const heroContentY = useTransform(heroProgress, [0, 1], ['0%', '35%']);
-  const heroContentScale = useTransform(heroProgress, [0, 1], [1, 0.9]);
+  const heroBgY = useTransform(heroProgress, [0, 1], ['0%', '22%']);
+  const heroBgScale = useTransform(heroProgress, [0, 1], [1, 1.2]);
+  const heroContentY = useTransform(heroProgress, [0, 1], ['0%', '45%']);
+  const heroContentScale = useTransform(heroProgress, [0, 1], [1, 0.85]);
   const heroContentOpacity = useTransform(heroProgress, [0, 0.8], [1, 0]);
 
   const handleOwnerAccess = async () => {
@@ -232,26 +221,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full bg-background text-foreground selection:bg-primary/30 selection:text-primary">
-      {/* TEMP: compare the hero heading animation styles, remove once one is picked */}
-      <div className="fixed top-20 left-1/2 z-[60] flex max-w-[92vw] -translate-x-1/2 flex-wrap justify-center gap-2 rounded-2xl border border-primary/30 bg-background/90 px-3 py-2 shadow-lg backdrop-blur-sm">
-        {(['extrude', 'shine', 'glide'] as const).map((variant) => (
-          <button
-            key={variant}
-            type="button"
-            onClick={() => setHeadingVariant(variant)}
-            className={`rounded-full px-3 py-1 text-[0.65rem] uppercase tracking-[0.15em] transition-colors ${
-              headingVariant === variant
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-primary'
-            }`}
-          >
-            {variant}
-          </button>
-        ))}
-      </div>
-
       {/* Navigation */}
-      <nav className="floating-panel fixed top-0 left-0 right-0 z-50 border-b border-primary/10 bg-background/75 py-4 shadow-[0_8px_40px_rgba(0,0,0,0.24)] backdrop-blur-xl">
+      <nav className="floating-panel fixed top-0 left-0 right-0 z-50 border-b border-primary/10 bg-background/75 py-4 backdrop-blur-xl">
         <div className="container mx-auto px-6 flex items-center justify-between gap-4">
           <Link href="/our-story">
             <motion.span
@@ -323,20 +294,6 @@ export default function App() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.18),transparent_55%)]" />
-          <motion.div
-            style={{ y: heroOrbTopY }}
-            className="pointer-events-none absolute left-8 top-24 h-40 w-40 rounded-full border border-primary/15 blur-3xl"
-          />
-          <motion.div
-            style={{ y: heroOrbBottomY }}
-            className="pointer-events-none absolute bottom-16 right-8 h-56 w-56 rounded-full border border-primary/10 blur-3xl"
-          />
-          <motion.div
-            style={{ y: heroLeafY, rotate: heroLeafRotate }}
-            className="pointer-events-none absolute -left-6 bottom-0 h-[60%] w-40 md:w-56"
-          >
-            <LeafSprig className="h-full w-full" opacity={0.3} />
-          </motion.div>
         </div>
         <motion.div
           style={{ y: heroContentY, scale: heroContentScale, opacity: heroContentOpacity, transformPerspective: 1200 }}
@@ -348,9 +305,7 @@ export default function App() {
           <ScrollReveal delay={200}>
             <h1 className="mb-6">
               <Heading3D
-                key={headingVariant}
                 text="UBTAN"
-                variant={headingVariant}
                 className="text-5xl md:text-7xl lg:text-8xl font-serif text-foreground font-medium"
               />
             </h1>
@@ -360,7 +315,7 @@ export default function App() {
           </ScrollReveal>
           <ScrollReveal delay={600}>
             <BookingModal>
-              <button className="px-8 py-4 bg-primary text-primary-foreground text-sm tracking-widest uppercase shadow-[0_16px_40px_rgba(212,175,55,0.18)] transition-all duration-300 hover:-translate-y-1 hover:bg-primary/90">
+              <button className="px-8 py-4 bg-primary text-primary-foreground text-sm tracking-widest uppercase transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_var(--color-primary)] active:translate-y-0 active:shadow-none">
                 Experience Luxury
               </button>
             </BookingModal>
@@ -369,16 +324,8 @@ export default function App() {
       </section>
 
       {/* About */}
-      <section ref={aboutRef} id="about" className="py-32 bg-card relative overflow-hidden">
-        <div className="absolute -right-32 top-1/2 -translate-y-1/2 w-[28rem] h-[28rem] border border-primary/10 rounded-full" />
-        <div className="absolute -right-16 top-1/2 -translate-y-1/2 w-72 h-72 border border-primary/10 rounded-full" />
-        <motion.div
-          style={{ y: aboutLeafY, rotate: aboutLeafRotate }}
-          className="pointer-events-none absolute -left-10 top-1/2 hidden h-[70%] w-40 -translate-y-1/2 md:block"
-        >
-          <LeafSprig className="h-full w-full" opacity={0.18} />
-        </motion.div>
-        <div className="container mx-auto px-6 relative">
+      <section id="about" className="py-32 bg-card relative overflow-hidden">
+        <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-8">
             <ScrollReveal>
               <span className="text-primary text-sm tracking-[0.2em] uppercase mb-4 block">The Visionary</span>
@@ -387,7 +334,7 @@ export default function App() {
             </ScrollReveal>
             <ScrollReveal delay={200}>
               <p className="text-lg font-light leading-relaxed text-muted-foreground">
-                Founded by Neelu Rai, UBTAN is more than a salon—it is a private sanctuary designed exclusively for women. With years of expertise in high-end beauty, Neelu created this space with one philosophy in mind: every woman deserves to experience her own beauty in a setting of absolute sophistication.
+                Founded by Neelu Rai, UBTAN is more than a salon: it is a private sanctuary designed exclusively for women. With years of expertise in high-end beauty, Neelu created this space with one philosophy in mind: every woman deserves to experience her own beauty in a setting of absolute sophistication.
               </p>
             </ScrollReveal>
             <ScrollReveal delay={400}>
@@ -407,7 +354,7 @@ export default function App() {
 
       {/* Services */}
       <section id="services" className="py-32 bg-background">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
             <div className="text-center max-w-2xl mx-auto mb-20">
               <span className="text-primary text-sm tracking-[0.2em] uppercase mb-4 block">Our Offerings</span>
@@ -440,7 +387,7 @@ export default function App() {
       {/* Services Menu Management */}
       <section id="menu" className="py-32 bg-card relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(212,175,55,0.12),transparent_45%)]" />
-        <div className="container mx-auto px-6 relative">
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
             <div className="text-center max-w-2xl mx-auto mb-14">
               <span className="text-primary text-sm tracking-[0.2em] uppercase mb-4 block">Private Menu</span>
@@ -466,9 +413,7 @@ export default function App() {
                           <p className="font-serif text-lg text-primary">{service.title}</p>
                           <p className="mt-1 text-sm font-light leading-relaxed text-muted-foreground">{service.description}</p>
                         </div>
-                        <span className="rounded-full border border-primary/20 px-3 py-1 text-[0.65rem] uppercase tracking-[0.28em] text-muted-foreground">
-                          {index + 1}
-                        </span>
+                        <span className="font-serif text-xl text-primary/40">{String(index + 1).padStart(2, '0')}</span>
                       </div>
                     </div>
                   ))}
@@ -559,7 +504,7 @@ export default function App() {
 
       {/* Why Choose Us */}
       <section id="gallery" className="py-32 bg-card relative overflow-hidden">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
             <div className="text-center max-w-2xl mx-auto mb-20">
               <span className="text-primary text-sm tracking-[0.2em] uppercase mb-4 block">The Experience</span>
@@ -579,9 +524,7 @@ export default function App() {
             ].map((item, i) => (
               <ScrollReveal key={i} delay={i * 100} direction={i % 3 === 0 ? 'left' : i % 3 === 1 ? 'up' : 'right'}>
                 <div className="text-center space-y-3 p-6">
-                  <div className="w-12 h-12 mx-auto rounded-full border border-primary/30 flex items-center justify-center text-primary font-serif text-lg">
-                    {i + 1}
-                  </div>
+                  <div className="font-serif text-2xl text-primary/40">{String(i + 1).padStart(2, '0')}</div>
                   <h3 className="font-serif text-lg text-foreground">{item.title}</h3>
                   <p className="text-sm font-light text-muted-foreground leading-relaxed">{item.desc}</p>
                 </div>
@@ -594,7 +537,7 @@ export default function App() {
       {/* Testimonials */}
       <section className="py-32 bg-background relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
             <div className="text-center mb-12">
               <h2 className="text-4xl font-serif text-primary">Trusted by Women</h2>
@@ -652,7 +595,7 @@ export default function App() {
       {/* Contact */}
       <section id="contact" className="py-32 bg-card relative">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 relative z-10">
           <div className="flex flex-col lg:flex-row gap-16 justify-between items-center">
             <div className="w-full lg:w-1/2 space-y-8">
               <ScrollReveal direction="left">
@@ -704,7 +647,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="pb-24 pt-12 sm:py-12 border-t border-white/5 bg-background text-center">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 relative z-10">
           <p className="text-2xl font-serif tracking-widest text-primary/50 mb-4">UBTAN</p>
           <p className="text-sm font-light text-muted-foreground">© {new Date().getFullYear()} UBTAN Salon by Neelu Rai. All rights reserved.</p>
         </div>

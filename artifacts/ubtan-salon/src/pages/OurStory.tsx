@@ -61,7 +61,6 @@ export function OurStory() {
       {/* Page hero */}
       <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden pt-24">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.16),transparent_55%)]" />
-        <div className="pointer-events-none absolute -left-20 top-1/3 h-72 w-72 rounded-full border border-primary/10 blur-3xl" />
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center">
           <ScrollReveal>
             <span className="mb-4 block text-sm uppercase tracking-[0.3em] text-primary">Her Journey</span>
@@ -80,7 +79,7 @@ export function OurStory() {
       {/* Milestones / timeline */}
       <section className="relative py-24">
         <div className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-primary/20 to-transparent md:block" />
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 relative z-10">
           <div className="mx-auto flex max-w-4xl flex-col gap-16">
             {MILESTONES.map((milestone) => (
               <ScrollReveal key={milestone.label} direction={milestone.direction}>
@@ -107,7 +106,7 @@ export function OurStory() {
 
       {/* Pull quote */}
       <section className="bg-card py-28">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal direction="scale">
             <div className="mx-auto max-w-2xl text-center">
               <p className="text-3xl font-serif italic leading-relaxed text-primary md:text-4xl">
@@ -121,7 +120,7 @@ export function OurStory() {
 
       {/* Closing CTA */}
       <section className="py-28 text-center">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
             <h2 className="text-3xl font-serif text-foreground md:text-4xl">Ready to experience UBTAN?</h2>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
@@ -141,7 +140,7 @@ export function OurStory() {
       </section>
 
       <footer className="pb-24 pt-12 sm:py-12 border-t border-white/5 bg-background text-center">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 relative z-10">
           <p className="text-2xl font-serif tracking-widest text-primary/50 mb-4">UBTAN</p>
           <p className="text-sm font-light text-muted-foreground">&copy; {new Date().getFullYear()} UBTAN Salon by Neelu Rai. All rights reserved.</p>
         </div>
