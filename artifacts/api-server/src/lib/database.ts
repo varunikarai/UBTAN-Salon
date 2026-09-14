@@ -46,6 +46,14 @@ function seedDefaults() {
     );
   `);
 
+  // Price arrived after the first services shipped, so existing databases need
+  // the column added rather than recreated. Kept as TEXT: salon pricing is
+  // rarely a bare number ("₹1,500 onwards", "₹800 - ₹2,400").
+  const serviceColumns = db.prepare("PRAGMA table_info(services)").all() as Array<{ name: string }>;
+  if (!serviceColumns.some((column) => column.name === "price")) {
+    db.exec("ALTER TABLE services ADD COLUMN price TEXT");
+  }
+
   const serviceCount = db.prepare("SELECT COUNT(*) as count FROM services").get() as { count: number };
   if (serviceCount.count === 0) {
     db.prepare(`
@@ -110,6 +118,7 @@ export type ServiceRecord = {
   id: number;
   title: string;
   description: string;
+  price: string | null;
   sortOrder: number;
 };
 
@@ -130,26 +139,54 @@ export type GalleryItemRecord = {
 
 export function listServices(): ServiceRecord[] {
   const rows = db.prepare(`
-    SELECT id, title, description, sort_order as sortOrder
+    SELECT id, title, description, price, sort_order as sortOrder
     FROM services
     ORDER BY sort_order ASC, id ASC
-  `).all() as Array<{ id: number; title: string; description: string; sortOrder: number }>;
+  `).all() as Array<{
+    id: number;
+    title: string;
+    description: string;
+    price: string | null;
+    sortOrder: number;
+  }>;
 
   return rows.map((row) => ({ ...row }));
 }
 
-export function createService(title: string, description: string): ServiceRecord {
+export function createService(title: string, description: string, price: string | null): ServiceRecord {
   const result = db.prepare(`
-    INSERT INTO services (title, description, sort_order)
-    VALUES (?, ?, ?)
-  `).run(title, description, Date.now());
+    INSERT INTO services (title, description, price, sort_order)
+    VALUES (?, ?, ?, ?)
+  `).run(title, description, price, Date.now());
 
   return {
     id: Number(result.lastInsertRowid),
     title,
     description,
+    price,
     sortOrder: Number(result.lastInsertRowid),
   };
+}
+
+export function updateService(
+  id: number,
+  fields: { title?: string; description?: string; price?: string | null },
+): ServiceRecord | null {
+  const existing = db.prepare(`
+    SELECT id, title, description, price, sort_order as sortOrder
+    FROM services WHERE id = ?
+  `).get(id) as ServiceRecord | undefined;
+
+  if (!existing) return null;
+
+  const title = fields.title ?? existing.title;
+  const description = fields.description ?? existing.description;
+  const price = fields.price === undefined ? existing.price : fields.price;
+
+  db.prepare("UPDATE services SET title = ?, description = ?, price = ? WHERE id = ?")
+    .run(title, description, price, id);
+
+  return { ...existing, title, description, price };
 }
 
 export function deleteService(id: number) {

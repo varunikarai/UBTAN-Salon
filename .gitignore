@@ -59,3 +59,5 @@ private-notes.md
 
 # Replit Agent build artifacts, not needed in the shipped repo
 attached_assets/
+# local SQLite database, real salon content lives here and is not public repo material
+artifacts/api-server/data/

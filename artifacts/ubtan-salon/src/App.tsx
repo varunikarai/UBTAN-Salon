@@ -15,7 +15,12 @@ type ServiceItem = {
   id?: number;
   title: string;
   description: string;
+  price?: string | null;
 };
+
+// The homepage carries a short list of the most-booked services; the full menu
+// with every price lives on /price-list.
+const MINI_MENU_COUNT = 5;
 
 type ReviewItem = {
   id?: number;
@@ -63,6 +68,9 @@ export default function App() {
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [newServiceTitle, setNewServiceTitle] = useState('');
   const [newServiceDescription, setNewServiceDescription] = useState('');
+  const [newServicePrice, setNewServicePrice] = useState('');
+  const [editingServiceId, setEditingServiceId] = useState<number | null>(null);
+  const [editPrice, setEditPrice] = useState('');
   const isReturningVisitor = useReturningVisitor();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -177,6 +185,7 @@ export default function App() {
     event.preventDefault();
     const title = newServiceTitle.trim();
     const description = newServiceDescription.trim();
+    const price = newServicePrice.trim();
 
     if (!title || !description) return;
 
@@ -184,7 +193,7 @@ export default function App() {
       const response = await fetch('/api/services', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-owner-token': ownerToken },
-        body: JSON.stringify({ title, description }),
+        body: JSON.stringify({ title, description, price }),
       });
 
       if (response.ok) {
@@ -192,11 +201,35 @@ export default function App() {
         setServices((current) => [created, ...current]);
         setNewServiceTitle('');
         setNewServiceDescription('');
+        setNewServicePrice('');
       } else {
         window.alert('Could not save the service. Try again.');
       }
     } catch {
       window.alert('Could not save the service. Try again.');
+    }
+  };
+
+  const handleSavePrice = async (serviceId?: number) => {
+    if (typeof serviceId !== 'number') return;
+
+    try {
+      const response = await fetch(`/api/services/${serviceId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-owner-token': ownerToken },
+        body: JSON.stringify({ price: editPrice.trim() }),
+      });
+
+      if (response.ok) {
+        const updated = await response.json() as ServiceItem;
+        setServices((current) => current.map((service) => (service.id === serviceId ? updated : service)));
+        setEditingServiceId(null);
+        setEditPrice('');
+      } else {
+        window.alert('Could not update the price. Try again.');
+      }
+    } catch {
+      window.alert('Could not update the price. Try again.');
     }
   };
 
@@ -287,6 +320,45 @@ export default function App() {
 
       {/* Hero */}
       <section ref={heroRef} className="relative flex h-screen items-center justify-center overflow-hidden">
+        {/* Quick links, balancing the hero against the vine artwork on the
+            right of the background photo. Desktop only: at narrow widths they
+            would sit on top of the wordmark, and the nav already carries Book
+            Now there. */}
+        <motion.div
+          style={{ opacity: heroContentOpacity }}
+          className="absolute left-6 top-1/2 z-10 hidden w-60 -translate-y-1/2 flex-col gap-3 lg:flex xl:left-12 xl:w-64"
+        >
+          <ScrollReveal direction="left">
+            <Link
+              href="/price-list"
+              className="luxury-card group flex items-center gap-4 px-5 py-3.5 transition-transform duration-300 hover:-translate-y-0.5"
+            >
+              <span className="h-px w-8 shrink-0 bg-primary/50 transition-colors duration-300 group-hover:bg-primary" />
+              <span className="font-serif text-base text-foreground">Price List</span>
+            </Link>
+          </ScrollReveal>
+          <ScrollReveal direction="left" delay={100}>
+            <a
+              href="#services"
+              className="luxury-card group flex items-center gap-4 px-5 py-3.5 transition-transform duration-300 hover:-translate-y-0.5"
+            >
+              <span className="h-px w-8 shrink-0 bg-primary/50 transition-colors duration-300 group-hover:bg-primary" />
+              <span className="font-serif text-base text-foreground">Services</span>
+            </a>
+          </ScrollReveal>
+          <ScrollReveal direction="left" delay={200}>
+            <BookingModal>
+              <button
+                type="button"
+                className="luxury-card group flex w-full items-center gap-4 px-5 py-3.5 text-left transition-transform duration-300 hover:-translate-y-0.5"
+              >
+                <span className="h-px w-8 shrink-0 bg-primary/50 transition-colors duration-300 group-hover:bg-primary" />
+                <span className="font-serif text-base text-foreground">Book Now</span>
+              </button>
+            </BookingModal>
+          </ScrollReveal>
+        </motion.div>
+
         <motion.div
           style={{ y: heroContentY, scale: heroContentScale, opacity: heroContentOpacity, transformPerspective: 1200 }}
           className="relative z-10 mx-auto mt-20 max-w-4xl px-6 text-center"
@@ -397,18 +469,27 @@ export default function App() {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  {services.map((service, index) => (
+                  {services.slice(0, MINI_MENU_COUNT).map((service, index) => (
                     <div key={`${service.title}-${index}`} className="border-b border-white/10 pb-4 last:border-b-0 last:pb-0">
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <p className="font-serif text-lg text-primary">{service.title}</p>
                           <p className="mt-1 text-sm font-light leading-relaxed text-muted-foreground">{service.description}</p>
                         </div>
-                        <span className="font-serif text-xl text-primary/40">{String(index + 1).padStart(2, '0')}</span>
+                        {service.price?.trim() && (
+                          <span className="shrink-0 font-serif text-lg text-primary tabular-nums">{service.price}</span>
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
+                <Link
+                  href="/price-list"
+                  className="mt-8 inline-flex items-center gap-3 text-xs uppercase tracking-[0.28em] text-primary transition-colors duration-300 hover:text-primary/80"
+                >
+                  <span className="h-px w-8 bg-primary/50" />
+                  See the full price list
+                </Link>
               </div>
             </ScrollReveal>
 
@@ -438,6 +519,12 @@ export default function App() {
                         rows={3}
                         className="w-full border border-white/10 bg-background/70 px-4 py-3 text-sm text-foreground outline-none ring-0 placeholder:text-muted-foreground"
                       />
+                      <input
+                        value={newServicePrice}
+                        onChange={(event) => setNewServicePrice(event.target.value)}
+                        placeholder="Price, e.g. ₹1,500 or ₹800 onwards (optional)"
+                        className="w-full border border-white/10 bg-background/70 px-4 py-3 text-sm text-foreground outline-none ring-0 placeholder:text-muted-foreground"
+                      />
                       <button
                         type="submit"
                         className="w-full bg-primary px-4 py-3 text-sm uppercase tracking-[0.28em] text-primary-foreground transition-all duration-300 hover:bg-primary/90"
@@ -448,18 +535,60 @@ export default function App() {
 
                     <div className="space-y-3">
                       {services.map((service, index) => (
-                        <div key={`${service.title}-${index}`} className="flex items-center justify-between gap-3 rounded-sm border border-white/10 bg-background/50 px-4 py-3">
-                          <div>
-                            <p className="font-serif text-sm text-foreground">{service.title}</p>
-                            <p className="text-xs font-light text-muted-foreground">{service.description}</p>
+                        <div key={`${service.title}-${index}`} className="rounded-sm border border-white/10 bg-background/50 px-4 py-3">
+                          <div className="flex items-center justify-between gap-3">
+                            <div>
+                              <p className="font-serif text-sm text-foreground">{service.title}</p>
+                              <p className="text-xs font-light text-muted-foreground">{service.description}</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveService(service.id)}
+                              className="shrink-0 text-[0.65rem] uppercase tracking-[0.28em] text-primary transition-colors duration-300 hover:text-primary/80"
+                            >
+                              Remove
+                            </button>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveService(service.id)}
-                            className="text-[0.65rem] uppercase tracking-[0.28em] text-primary transition-colors duration-300 hover:text-primary/80"
-                          >
-                            Remove
-                          </button>
+
+                          {editingServiceId === service.id ? (
+                            <div className="mt-3 flex items-center gap-2">
+                              <input
+                                value={editPrice}
+                                onChange={(event) => setEditPrice(event.target.value)}
+                                placeholder="₹1,500"
+                                autoFocus
+                                className="w-full border border-white/10 bg-background/70 px-3 py-2 text-xs text-foreground outline-none ring-0 placeholder:text-muted-foreground"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleSavePrice(service.id)}
+                                className="shrink-0 bg-primary px-3 py-2 text-[0.65rem] uppercase tracking-[0.24em] text-primary-foreground"
+                              >
+                                Save
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setEditingServiceId(null)}
+                                className="shrink-0 text-[0.65rem] uppercase tracking-[0.24em] text-muted-foreground transition-colors hover:text-foreground"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditingServiceId(service.id ?? null);
+                                setEditPrice(service.price ?? '');
+                              }}
+                              className="mt-2 flex items-center gap-2 text-[0.65rem] uppercase tracking-[0.24em] text-muted-foreground transition-colors duration-300 hover:text-primary"
+                            >
+                              <span className="font-serif text-sm normal-case tracking-normal text-primary">
+                                {service.price?.trim() ? service.price : 'No price set'}
+                              </span>
+                              <span>Edit</span>
+                            </button>
+                          )}
                         </div>
                       ))}
                     </div>

@@ -10,6 +10,7 @@ import {
   listGalleryItems,
   listReviews,
   listServices,
+  updateService,
 } from "../lib/database";
 import { requireOwnerAuth } from "../middlewares/ownerAuth";
 import { publicWriteLimiter } from "../middlewares/publicWriteLimiter";
@@ -25,13 +26,62 @@ router.get("/services", (_req, res) => {
 });
 
 router.post("/services", requireOwnerAuth, (req, res) => {
-  const { title, description } = req.body as { title?: string; description?: string };
+  const { title, description, price } = req.body as {
+    title?: string;
+    description?: string;
+    price?: string;
+  };
   if (!title || !description) {
     return res.status(400).json({ error: "title and description are required" });
   }
 
-  const service = createService(title, description);
+  if (title.length > 200 || description.length > 2000 || (price?.length ?? 0) > 100) {
+    return res.status(400).json({ error: "one or more fields exceed the maximum length" });
+  }
+
+  const service = createService(title, description, price?.trim() || null);
   return res.status(201).json(service);
+});
+
+router.patch("/services/:id", requireOwnerAuth, (req, res) => {
+  const id = Number(req.params.id);
+  if (Number.isNaN(id)) {
+    return res.status(400).json({ error: "invalid id" });
+  }
+
+  const { title, description, price } = req.body as {
+    title?: string;
+    description?: string;
+    price?: string | null;
+  };
+
+  if (title === undefined && description === undefined && price === undefined) {
+    return res.status(400).json({ error: "nothing to update" });
+  }
+
+  if (title !== undefined && !title.trim()) {
+    return res.status(400).json({ error: "title cannot be empty" });
+  }
+
+  if (description !== undefined && !description.trim()) {
+    return res.status(400).json({ error: "description cannot be empty" });
+  }
+
+  if ((title?.length ?? 0) > 200 || (description?.length ?? 0) > 2000 || (price?.length ?? 0) > 100) {
+    return res.status(400).json({ error: "one or more fields exceed the maximum length" });
+  }
+
+  const service = updateService(id, {
+    title: title?.trim(),
+    description: description?.trim(),
+    price: price === undefined ? undefined : (price?.trim() || null),
+  });
+
+  if (!service) {
+    return res.status(404).json({ error: "service not found" });
+  }
+
+  return res.json(service);
 });
 
 router.delete("/services/:id", requireOwnerAuth, (req, res) => {

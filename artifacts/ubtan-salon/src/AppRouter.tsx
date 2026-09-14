@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Route, Switch, useLocation } from 'wouter';
 import App from './App';
 import { OurStory } from './pages/OurStory';
+import { PriceList } from './pages/PriceList';
 import { ContactFab } from './components/ContactFab';
 import { GlobalBackground } from './components/GlobalBackground';
 
@@ -33,6 +34,7 @@ export default function AppRouter() {
         >
           <Switch location={location}>
             <Route path="/our-story" component={OurStory} />
+            <Route path="/price-list" component={PriceList} />
             <Route path="/" component={App} />
           </Switch>
         </motion.div>
