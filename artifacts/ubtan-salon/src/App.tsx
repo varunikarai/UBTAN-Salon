@@ -8,6 +8,7 @@ import { ScrollReveal } from './components/ScrollReveal';
 import { TiltCard } from './components/TiltCard';
 import { Heading3D, type Heading3DVariant } from './components/Heading3D';
 import { Menu, X } from 'lucide-react';
+import { LeafSprig } from './components/LeafSprig';
 import { useReturningVisitor } from './hooks/useReturningVisitor';
 
 type ServiceItem = {
@@ -63,7 +64,7 @@ export default function App() {
   const [newServiceTitle, setNewServiceTitle] = useState('');
   const [newServiceDescription, setNewServiceDescription] = useState('');
   const isReturningVisitor = useReturningVisitor();
-  const [headingVariant, setHeadingVariant] = useState<Heading3DVariant>('shatter');
+  const [headingVariant, setHeadingVariant] = useState<Heading3DVariant>('extrude');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const heroRef = useRef<HTMLElement>(null);
@@ -72,6 +73,13 @@ export default function App() {
   const heroBgScale = useTransform(heroProgress, [0, 1], [1, 1.15]);
   const heroOrbTopY = useTransform(heroProgress, [0, 1], ['0%', '55%']);
   const heroOrbBottomY = useTransform(heroProgress, [0, 1], ['0%', '-40%']);
+  const heroLeafY = useTransform(heroProgress, [0, 1], ['0%', '75%']);
+  const heroLeafRotate = useTransform(heroProgress, [0, 1], [0, 12]);
+
+  const aboutRef = useRef<HTMLElement>(null);
+  const { scrollYProgress: aboutProgress } = useScroll({ target: aboutRef, offset: ['start end', 'end start'] });
+  const aboutLeafY = useTransform(aboutProgress, [0, 1], ['-20%', '20%']);
+  const aboutLeafRotate = useTransform(aboutProgress, [0, 1], [-10, 10]);
   const heroContentY = useTransform(heroProgress, [0, 1], ['0%', '35%']);
   const heroContentScale = useTransform(heroProgress, [0, 1], [1, 0.9]);
   const heroContentOpacity = useTransform(heroProgress, [0, 0.8], [1, 0]);
@@ -226,7 +234,7 @@ export default function App() {
     <div className="min-h-screen w-full bg-background text-foreground selection:bg-primary/30 selection:text-primary">
       {/* TEMP: compare the hero heading animation styles, remove once one is picked */}
       <div className="fixed top-20 left-1/2 z-[60] flex max-w-[92vw] -translate-x-1/2 flex-wrap justify-center gap-2 rounded-2xl border border-primary/30 bg-background/90 px-3 py-2 shadow-lg backdrop-blur-sm">
-        {(['flip', 'assemble', 'wave', 'shatter', 'extrude', 'flythrough'] as const).map((variant) => (
+        {(['extrude', 'shine', 'glide'] as const).map((variant) => (
           <button
             key={variant}
             type="button"
@@ -323,6 +331,12 @@ export default function App() {
             style={{ y: heroOrbBottomY }}
             className="pointer-events-none absolute bottom-16 right-8 h-56 w-56 rounded-full border border-primary/10 blur-3xl"
           />
+          <motion.div
+            style={{ y: heroLeafY, rotate: heroLeafRotate }}
+            className="pointer-events-none absolute -left-6 bottom-0 h-[60%] w-40 md:w-56"
+          >
+            <LeafSprig className="h-full w-full" opacity={0.3} />
+          </motion.div>
         </div>
         <motion.div
           style={{ y: heroContentY, scale: heroContentScale, opacity: heroContentOpacity, transformPerspective: 1200 }}
@@ -355,9 +369,15 @@ export default function App() {
       </section>
 
       {/* About */}
-      <section id="about" className="py-32 bg-card relative overflow-hidden">
+      <section ref={aboutRef} id="about" className="py-32 bg-card relative overflow-hidden">
         <div className="absolute -right-32 top-1/2 -translate-y-1/2 w-[28rem] h-[28rem] border border-primary/10 rounded-full" />
         <div className="absolute -right-16 top-1/2 -translate-y-1/2 w-72 h-72 border border-primary/10 rounded-full" />
+        <motion.div
+          style={{ y: aboutLeafY, rotate: aboutLeafRotate }}
+          className="pointer-events-none absolute -left-10 top-1/2 hidden h-[70%] w-40 -translate-y-1/2 md:block"
+        >
+          <LeafSprig className="h-full w-full" opacity={0.18} />
+        </motion.div>
         <div className="container mx-auto px-6 relative">
           <div className="max-w-3xl mx-auto text-center space-y-8">
             <ScrollReveal>

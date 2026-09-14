@@ -26,7 +26,7 @@ export function ScrollReveal({ children, className, delay = 0, direction = 'up' 
       style={{ transformPerspective: 1200 }}
       initial={{ opacity: 0, x: offset.x ?? 0, y: offset.y ?? 0, scale: offset.scale ?? 1, rotateX: offset.rotateX ?? 0 }}
       whileInView={{ opacity: 1, x: 0, y: 0, scale: 1, rotateX: 0 }}
-      viewport={{ once: true, margin: '0px 0px -80px 0px', amount: 0.1 }}
+      viewport={{ once: false, margin: '0px 0px -80px 0px', amount: 0.1 }}
       transition={{ duration: 0.9, delay: delay / 1000, ease: EASE }}
     >
       {children}
