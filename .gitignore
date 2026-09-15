@@ -41,10 +41,7 @@ testem.log
 .DS_Store
 Thumbs.db
 
-.cursor/rules/nx-rules.mdc
-.github/instructions/nx.instructions.md
-
-# Replit
+# caches
 .cache/
 .local/
 
@@ -57,33 +54,7 @@ Thumbs.db
 # local-only notes, not for the public repo
 private-notes.md
 
-# Replit Agent build artifacts, not needed in the shipped repo
+# scratch assets from early prototyping, not part of the shipped site
 attached_assets/
 # local SQLite database, real salon content lives here and is not public repo material
 artifacts/api-server/data/
-
-# AI tooling traces, none of this belongs in a public repo
-.claude/
-CLAUDE.md
-.claude.json
-.cursor/
-.cursorrules
-.cursorignore
-.aider*
-.github/copilot-instructions.md
-.github/instructions/
-.windsurfrules
-.windsurf/
-.codeium/
-.continue/
-.specstory/
-.gemini/
-GEMINI.md
-AGENTS.md
-.agent/
-.replit
-replit.nix
-replit.md
-.replit-artifact/
-.breakpoints
-.upm/
