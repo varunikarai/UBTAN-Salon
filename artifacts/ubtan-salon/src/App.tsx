@@ -16,7 +16,11 @@ type ServiceItem = {
   title: string;
   description: string;
   price?: string | null;
+  category?: string | null;
 };
+
+// The salon's own split, as printed on the card.
+const SERVICE_CATEGORIES = ['Hair', 'Skin', 'Makeup', 'Nail Art', 'Academy'];
 
 // The homepage carries a short list of the most-booked services; the full menu
 // with every price lives on /price-list.
@@ -69,8 +73,10 @@ export default function App() {
   const [newServiceTitle, setNewServiceTitle] = useState('');
   const [newServiceDescription, setNewServiceDescription] = useState('');
   const [newServicePrice, setNewServicePrice] = useState('');
+  const [newServiceCategory, setNewServiceCategory] = useState('');
   const [editingServiceId, setEditingServiceId] = useState<number | null>(null);
   const [editPrice, setEditPrice] = useState('');
+  const [editCategory, setEditCategory] = useState('');
   const isReturningVisitor = useReturningVisitor();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -186,6 +192,7 @@ export default function App() {
     const title = newServiceTitle.trim();
     const description = newServiceDescription.trim();
     const price = newServicePrice.trim();
+    const category = newServiceCategory.trim();
 
     if (!title || !description) return;
 
@@ -193,7 +200,7 @@ export default function App() {
       const response = await fetch('/api/services', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-owner-token': ownerToken },
-        body: JSON.stringify({ title, description, price }),
+        body: JSON.stringify({ title, description, price, category }),
       });
 
       if (response.ok) {
@@ -202,6 +209,7 @@ export default function App() {
         setNewServiceTitle('');
         setNewServiceDescription('');
         setNewServicePrice('');
+        setNewServiceCategory('');
       } else {
         window.alert('Could not save the service. Try again.');
       }
@@ -210,14 +218,14 @@ export default function App() {
     }
   };
 
-  const handleSavePrice = async (serviceId?: number) => {
+  const handleSaveService = async (serviceId?: number) => {
     if (typeof serviceId !== 'number') return;
 
     try {
       const response = await fetch(`/api/services/${serviceId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'x-owner-token': ownerToken },
-        body: JSON.stringify({ price: editPrice.trim() }),
+        body: JSON.stringify({ price: editPrice.trim(), category: editCategory.trim() }),
       });
 
       if (response.ok) {
@@ -225,11 +233,12 @@ export default function App() {
         setServices((current) => current.map((service) => (service.id === serviceId ? updated : service)));
         setEditingServiceId(null);
         setEditPrice('');
+        setEditCategory('');
       } else {
-        window.alert('Could not update the price. Try again.');
+        window.alert('Could not update the service. Try again.');
       }
     } catch {
-      window.alert('Could not update the price. Try again.');
+      window.alert('Could not update the service. Try again.');
     }
   };
 
@@ -525,6 +534,18 @@ export default function App() {
                         placeholder="Price, e.g. ₹1,500 or ₹800 onwards (optional)"
                         className="w-full border border-white/10 bg-background/70 px-4 py-3 text-sm text-foreground outline-none ring-0 placeholder:text-muted-foreground"
                       />
+                      <input
+                        value={newServiceCategory}
+                        onChange={(event) => setNewServiceCategory(event.target.value)}
+                        list="service-categories"
+                        placeholder="Section, e.g. Hair, Skin, Makeup (optional)"
+                        className="w-full border border-white/10 bg-background/70 px-4 py-3 text-sm text-foreground outline-none ring-0 placeholder:text-muted-foreground"
+                      />
+                      <datalist id="service-categories">
+                        {SERVICE_CATEGORIES.map((category) => (
+                          <option key={category} value={category} />
+                        ))}
+                      </datalist>
                       <button
                         type="submit"
                         className="w-full bg-primary px-4 py-3 text-sm uppercase tracking-[0.28em] text-primary-foreground transition-all duration-300 hover:bg-primary/90"
@@ -559,9 +580,16 @@ export default function App() {
                                 autoFocus
                                 className="w-full border border-white/10 bg-background/70 px-3 py-2 text-xs text-foreground outline-none ring-0 placeholder:text-muted-foreground"
                               />
+                              <input
+                                value={editCategory}
+                                onChange={(event) => setEditCategory(event.target.value)}
+                                list="service-categories"
+                                placeholder="Section"
+                                className="w-full border border-white/10 bg-background/70 px-3 py-2 text-xs text-foreground outline-none ring-0 placeholder:text-muted-foreground"
+                              />
                               <button
                                 type="button"
-                                onClick={() => handleSavePrice(service.id)}
+                                onClick={() => handleSaveService(service.id)}
                                 className="shrink-0 bg-primary px-3 py-2 text-[0.65rem] uppercase tracking-[0.24em] text-primary-foreground"
                               >
                                 Save
@@ -580,12 +608,14 @@ export default function App() {
                               onClick={() => {
                                 setEditingServiceId(service.id ?? null);
                                 setEditPrice(service.price ?? '');
+                                setEditCategory(service.category ?? '');
                               }}
-                              className="mt-2 flex items-center gap-2 text-[0.65rem] uppercase tracking-[0.24em] text-muted-foreground transition-colors duration-300 hover:text-primary"
+                              className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.65rem] uppercase tracking-[0.24em] text-muted-foreground transition-colors duration-300 hover:text-primary"
                             >
                               <span className="font-serif text-sm normal-case tracking-normal text-primary">
                                 {service.price?.trim() ? service.price : 'No price set'}
                               </span>
+                              <span>{service.category?.trim() || 'No section'}</span>
                               <span>Edit</span>
                             </button>
                           )}

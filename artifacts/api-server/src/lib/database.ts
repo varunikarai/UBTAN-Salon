@@ -53,24 +53,33 @@ function seedDefaults() {
   if (!serviceColumns.some((column) => column.name === "price")) {
     db.exec("ALTER TABLE services ADD COLUMN price TEXT");
   }
+  // Category groups the price list into subsections, following the salon's own
+  // split: Hair, Skin, Makeup, Nail Art, Academy.
+  if (!serviceColumns.some((column) => column.name === "category")) {
+    db.exec("ALTER TABLE services ADD COLUMN category TEXT");
+  }
 
   const serviceCount = db.prepare("SELECT COUNT(*) as count FROM services").get() as { count: number };
   if (serviceCount.count === 0) {
     db.prepare(`
-      INSERT INTO services (title, description, sort_order) VALUES
-      (?, ?, 1),
-      (?, ?, 2),
-      (?, ?, 3),
-      (?, ?, 4)
+      INSERT INTO services (title, description, category, sort_order) VALUES
+      (?, ?, ?, 1),
+      (?, ?, ?, 2),
+      (?, ?, ?, 3),
+      (?, ?, ?, 4)
     `).run(
       "Hair Architecture",
       "Precision cuts, bespoke coloring, and restorative rituals tailored to your hair profile.",
+      "Hair",
       "Skin Radiance",
       "Clinical facials and luminous treatments designed for a polished glow.",
+      "Skin",
       "Bespoke Makeup",
       "Modern glamour and soft enhancement for any occasion.",
+      "Makeup",
       "Hands & Feet",
       "Spa-grade manicures and pedicures with calm, elevated comfort.",
+      "Nail Art",
     );
   }
 
@@ -119,6 +128,7 @@ export type ServiceRecord = {
   title: string;
   description: string;
   price: string | null;
+  category: string | null;
   sortOrder: number;
 };
 
@@ -139,7 +149,7 @@ export type GalleryItemRecord = {
 
 export function listServices(): ServiceRecord[] {
   const rows = db.prepare(`
-    SELECT id, title, description, price, sort_order as sortOrder
+    SELECT id, title, description, price, category, sort_order as sortOrder
     FROM services
     ORDER BY sort_order ASC, id ASC
   `).all() as Array<{
@@ -147,33 +157,40 @@ export function listServices(): ServiceRecord[] {
     title: string;
     description: string;
     price: string | null;
+    category: string | null;
     sortOrder: number;
   }>;
 
   return rows.map((row) => ({ ...row }));
 }
 
-export function createService(title: string, description: string, price: string | null): ServiceRecord {
+export function createService(
+  title: string,
+  description: string,
+  price: string | null,
+  category: string | null,
+): ServiceRecord {
   const result = db.prepare(`
-    INSERT INTO services (title, description, price, sort_order)
-    VALUES (?, ?, ?, ?)
-  `).run(title, description, price, Date.now());
+    INSERT INTO services (title, description, price, category, sort_order)
+    VALUES (?, ?, ?, ?, ?)
+  `).run(title, description, price, category, Date.now());
 
   return {
     id: Number(result.lastInsertRowid),
     title,
     description,
     price,
+    category,
     sortOrder: Number(result.lastInsertRowid),
   };
 }
 
 export function updateService(
   id: number,
-  fields: { title?: string; description?: string; price?: string | null },
+  fields: { title?: string; description?: string; price?: string | null; category?: string | null },
 ): ServiceRecord | null {
   const existing = db.prepare(`
-    SELECT id, title, description, price, sort_order as sortOrder
+    SELECT id, title, description, price, category, sort_order as sortOrder
     FROM services WHERE id = ?
   `).get(id) as ServiceRecord | undefined;
 
@@ -182,11 +199,12 @@ export function updateService(
   const title = fields.title ?? existing.title;
   const description = fields.description ?? existing.description;
   const price = fields.price === undefined ? existing.price : fields.price;
+  const category = fields.category === undefined ? existing.category : fields.category;
 
-  db.prepare("UPDATE services SET title = ?, description = ?, price = ? WHERE id = ?")
-    .run(title, description, price, id);
+  db.prepare("UPDATE services SET title = ?, description = ?, price = ?, category = ? WHERE id = ?")
+    .run(title, description, price, category, id);
 
-  return { ...existing, title, description, price };
+  return { ...existing, title, description, price, category };
 }
 
 export function deleteService(id: number) {

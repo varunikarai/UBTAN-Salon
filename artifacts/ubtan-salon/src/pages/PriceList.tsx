@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import { BookingModal } from '../components/BookingModal';
@@ -9,13 +9,42 @@ type ServiceItem = {
   title: string;
   description: string;
   price?: string | null;
+  category?: string | null;
 };
+
+const UNGROUPED = 'More Services';
+
+// Services arrive already ordered, so building the groups in encounter order
+// means the subsections follow the same order the owner set, with anything
+// uncategorised collected at the end.
+function groupByCategory(services: ServiceItem[]): Array<[string, ServiceItem[]]> {
+  const groups = new Map<string, ServiceItem[]>();
+
+  for (const service of services) {
+    const key = service.category?.trim() || UNGROUPED;
+    const existing = groups.get(key);
+    if (existing) {
+      existing.push(service);
+    } else {
+      groups.set(key, [service]);
+    }
+  }
+
+  const ungrouped = groups.get(UNGROUPED);
+  if (ungrouped) {
+    groups.delete(UNGROUPED);
+    groups.set(UNGROUPED, ungrouped);
+  }
+
+  return [...groups.entries()];
+}
 
 // The full menu. The homepage carries only the short, most-booked list; this
 // page is the complete one with prices against every service.
 export function PriceList() {
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const groups = useMemo(() => groupByCategory(services), [services]);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -63,7 +92,10 @@ export function PriceList() {
         </div>
       </nav>
 
-      <section className="relative px-6 pt-36 pb-16 text-center">
+      {/* relative z-10 on every content block: GlobalBackground is a fixed,
+          positioned layer, so unpositioned page content paints underneath its
+          scrim and everything reads dimmed. */}
+      <section className="relative z-10 px-6 pt-36 pb-16 text-center">
         <ScrollReveal>
           <span className="mb-4 block text-sm uppercase tracking-[0.3em] text-primary">The Full Menu</span>
         </ScrollReveal>
@@ -75,27 +107,33 @@ export function PriceList() {
         </ScrollReveal>
       </section>
 
-      <section className="px-6 pb-32">
+      <section className="relative z-10 px-6 pb-32">
         <div className="mx-auto max-w-3xl">
-          {services.map((service, index) => (
-            <ScrollReveal key={service.id ?? index} delay={Math.min(index, 6) * 80}>
-              <div className="flex items-baseline gap-5 border-b border-white/10 py-7 last:border-b-0">
-                <span className="font-serif text-lg text-primary/40 tabular-nums">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <div className="flex-1">
-                  <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-                    <h2 className="font-serif text-xl text-foreground">{service.title}</h2>
-                    <span className="font-serif text-lg text-primary tabular-nums">
-                      {service.price?.trim() ? service.price : 'On request'}
-                    </span>
-                  </div>
-                  <p className="mt-2 max-w-xl text-sm font-light leading-relaxed text-muted-foreground">
-                    {service.description}
-                  </p>
+          {groups.map(([category, items]) => (
+            <section key={category} className="mb-14 last:mb-0">
+              <ScrollReveal>
+                <div className="mb-2 flex items-center gap-4">
+                  <h2 className="text-xs uppercase tracking-[0.3em] text-primary">{category}</h2>
+                  <span className="h-px flex-1 bg-primary/20" />
                 </div>
-              </div>
-            </ScrollReveal>
+              </ScrollReveal>
+
+              {items.map((service, index) => (
+                <ScrollReveal key={service.id ?? `${category}-${index}`} delay={Math.min(index, 5) * 70}>
+                  <div className="border-b border-white/10 py-6 last:border-b-0">
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+                      <h3 className="font-serif text-xl text-foreground">{service.title}</h3>
+                      <span className="font-serif text-lg text-primary tabular-nums">
+                        {service.price?.trim() ? service.price : 'On request'}
+                      </span>
+                    </div>
+                    <p className="mt-2 max-w-xl text-sm font-light leading-relaxed text-muted-foreground">
+                      {service.description}
+                    </p>
+                  </div>
+                </ScrollReveal>
+              ))}
+            </section>
           ))}
 
           {loaded && services.length === 0 && (
@@ -105,7 +143,7 @@ export function PriceList() {
           )}
 
           <div className="mt-16 flex flex-col items-center gap-4 text-center">
-            <p className="max-w-md text-sm font-light leading-relaxed text-muted-foreground">
+            <p className="max-w-md text-sm leading-relaxed text-foreground">
               Prices are a starting point and can vary with hair length, density, and the products chosen for you.
               Anything marked on request is quoted after a short consultation.
             </p>
@@ -118,7 +156,7 @@ export function PriceList() {
         </div>
       </section>
 
-      <footer className="border-t border-white/5 pb-24 pt-12 text-center sm:py-12">
+      <footer className="relative z-10 border-t border-white/5 pb-24 pt-12 text-center sm:py-12">
         <div className="container relative z-10 mx-auto px-6">
           <p className="mb-4 text-2xl font-serif tracking-widest text-primary/50">UBTAN</p>
           <p className="text-sm font-light text-muted-foreground">

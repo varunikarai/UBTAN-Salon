@@ -26,20 +26,26 @@ router.get("/services", (_req, res) => {
 });
 
 router.post("/services", requireOwnerAuth, (req, res) => {
-  const { title, description, price } = req.body as {
+  const { title, description, price, category } = req.body as {
     title?: string;
     description?: string;
     price?: string;
+    category?: string;
   };
   if (!title || !description) {
     return res.status(400).json({ error: "title and description are required" });
   }
 
-  if (title.length > 200 || description.length > 2000 || (price?.length ?? 0) > 100) {
+  if (
+    title.length > 200 ||
+    description.length > 2000 ||
+    (price?.length ?? 0) > 100 ||
+    (category?.length ?? 0) > 100
+  ) {
     return res.status(400).json({ error: "one or more fields exceed the maximum length" });
   }
 
-  const service = createService(title, description, price?.trim() || null);
+  const service = createService(title, description, price?.trim() || null, category?.trim() || null);
   return res.status(201).json(service);
 });
 
@@ -49,13 +55,14 @@ router.patch("/services/:id", requireOwnerAuth, (req, res) => {
     return res.status(400).json({ error: "invalid id" });
   }
 
-  const { title, description, price } = req.body as {
+  const { title, description, price, category } = req.body as {
     title?: string;
     description?: string;
     price?: string | null;
+    category?: string | null;
   };
 
-  if (title === undefined && description === undefined && price === undefined) {
+  if (title === undefined && description === undefined && price === undefined && category === undefined) {
     return res.status(400).json({ error: "nothing to update" });
   }
 
@@ -67,7 +74,12 @@ router.patch("/services/:id", requireOwnerAuth, (req, res) => {
     return res.status(400).json({ error: "description cannot be empty" });
   }
 
-  if ((title?.length ?? 0) > 200 || (description?.length ?? 0) > 2000 || (price?.length ?? 0) > 100) {
+  if (
+    (title?.length ?? 0) > 200 ||
+    (description?.length ?? 0) > 2000 ||
+    (price?.length ?? 0) > 100 ||
+    (category?.length ?? 0) > 100
+  ) {
     return res.status(400).json({ error: "one or more fields exceed the maximum length" });
   }
 
@@ -75,6 +87,7 @@ router.patch("/services/:id", requireOwnerAuth, (req, res) => {
     title: title?.trim(),
     description: description?.trim(),
     price: price === undefined ? undefined : (price?.trim() || null),
+    category: category === undefined ? undefined : (category?.trim() || null),
   });
 
   if (!service) {

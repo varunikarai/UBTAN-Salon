@@ -61,3 +61,29 @@ private-notes.md
 attached_assets/
 # local SQLite database, real salon content lives here and is not public repo material
 artifacts/api-server/data/
+
+# AI tooling traces, none of this belongs in a public repo
+.claude/
+CLAUDE.md
+.claude.json
+.cursor/
+.cursorrules
+.cursorignore
+.aider*
+.github/copilot-instructions.md
+.github/instructions/
+.windsurfrules
+.windsurf/
+.codeium/
+.continue/
+.specstory/
+.gemini/
+GEMINI.md
+AGENTS.md
+.agent/
+.replit
+replit.nix
+replit.md
+.replit-artifact/
+.breakpoints
+.upm/
